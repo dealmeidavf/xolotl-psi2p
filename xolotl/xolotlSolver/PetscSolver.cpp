@@ -432,6 +432,13 @@ PetscErrorCode RHSFunction(TS ts, PetscReal ftime, Vec C, Vec F, void *ptr) {
 		}
 		computeNewFluxes->stop();
 
+		if (x == 0.0) {
+			for (int i = 0; i < size; i++) {
+				concOffset[i] = 0.0;
+				updatedConcOffset[i] = 0.0;
+			}
+		}
+
 //		for (int i = 0; i < size; i++) {
 //			std::cout << updatedConcOffset[i] << std::endl;
 //		}
@@ -450,6 +457,7 @@ PetscErrorCode RHSFunction(TS ts, PetscReal ftime, Vec C, Vec F, void *ptr) {
 	checkPetscError(ierr);
 	ierr = DMRestoreLocalVector(da, &localC);
 	checkPetscError(ierr);
+
 	PetscFunctionReturn(0);
 
 }
@@ -585,6 +593,13 @@ PetscErrorCode RHSJacobian(TS ts, PetscReal ftime, Vec C, Mat *A, Mat *J,
 			// Copy data into the PSIClusterReactionNetwork so that it can
 			// compute the new concentrations.
 			concOffset = concs + size * xi;
+
+			if (xi * hx == 0.0) {
+				for (int i = 0; i < size; i++) {
+					concOffset[i] = 0.0;
+				}
+			}
+
 			network->updateConcentrationsFromArray(concOffset);
 
 			/* -------------------------------------------------------------
@@ -673,6 +688,13 @@ PetscErrorCode RHSJacobian(TS ts, PetscReal ftime, Vec C, Mat *A, Mat *J,
 		// Copy data into the PSIClusterReactionNetwork so that it can
 		// compute the new concentrations.
 		concOffset = concs + size * xi;
+
+		if (xi * hx == 0.0) {
+			for (int i = 0; i < size; i++) {
+				concOffset[i] = 0.0;
+			}
+		}
+
 		network->updateConcentrationsFromArray(concOffset);
 		// Get the reactants
 		reactants = network->getAll();

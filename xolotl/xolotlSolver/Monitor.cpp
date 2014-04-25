@@ -22,7 +22,7 @@ static inline bool checkPetscError(PetscErrorCode errorCode) {
 }
 
 //! The double that will store the accumulation of helium flux.
-double heliumFluence = 0.;
+double heliumFluence = 0.0;
 
 /**
  * This is a monitoring method that will compute the total helium fluence
@@ -94,7 +94,7 @@ static PetscErrorCode heliumRetention(TS ts, PetscInt timestep, PetscReal time,
 				realTime);
 
 		// And add it to the fluence
-		heliumFluence += 10000. * incidentFlux * time;
+		heliumFluence += 10000.0 * incidentFlux * time;
 	}
 
 	PetscFunctionReturn(0);
@@ -323,8 +323,8 @@ void computeRetention(TS ts, Vec C) {
 	if (procId == 0) {
 		// Loop on all the other processes
 		for (int i = 1; i < worldSize; i++) {
-			double otherConcentration = 0.;
-			double otherFluence = 0.;
+			double otherConcentration = 0.0;
+			double otherFluence = 0.0;
 
 			// Receive the value from the other processes
 			MPI_Recv(&otherConcentration, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD,
@@ -339,7 +339,7 @@ void computeRetention(TS ts, Vec C) {
 
 		// Print the result
 		std::cout << "Helium retention = "
-				<< 100. * heConcentration / heliumFluence << " %" << std::endl;
+				<< 100.0 * heConcentration / heliumFluence << " %" << std::endl;
 	}
 
 	else {
