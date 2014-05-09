@@ -308,20 +308,8 @@ PetscErrorCode RHSFunction(TS ts, PetscReal ftime, Vec C, Vec F, void *ptr) {
 	PETSC_IGNORE, PETSC_IGNORE, PETSC_IGNORE, PETSC_IGNORE,
 	PETSC_IGNORE);
 	checkPetscError(ierr);
-
-	// Get the total number of grid points specified by the command line option
-	PetscInt numOfxGridPoints;
-	PetscBool flg;
-	PetscOptionsGetInt(NULL, "-da_grid_x", &numOfxGridPoints, &flg);
-	if ( !flg )
-		numOfxGridPoints = 8.0;
-
 	// Setup some step size variables
-	hx = numOfxGridPoints / (PetscReal)(Mx - 1);
-	// Display the number of grid points that will be used
-//	std::cout << "\nNumber of x grid points = " << numOfxGridPoints << std::endl;
-//	std::cout << "Number of grid points = " << Mx << std::endl;
-//	std::cout << "Step size hx = " << hx << std::endl;
+	hx = 8.0 / (PetscReal) (Mx - 1);
 	sx = 1.0 / (hx * hx);
 
 	// Scatter ghost points to local vector, using the 2-step process
@@ -545,16 +533,7 @@ PetscErrorCode RHSJacobian(TS ts, PetscReal ftime, Vec C, Mat *A, Mat *J,
 	PETSC_IGNORE, PETSC_IGNORE, PETSC_IGNORE, PETSC_IGNORE,
 	PETSC_IGNORE);
 	checkPetscError(ierr);
-
-	// Get the total number of grid points specified by the command line option
-	PetscInt numOfxGridPoints;
-	PetscBool flg;
-	PetscOptionsGetInt(NULL, "-da_grid_x", &numOfxGridPoints, &flg);
-	if ( !flg )
-		numOfxGridPoints = 8.0;
-
-	// Setup some step size variables
-	hx = numOfxGridPoints / (PetscReal)(Mx - 1);
+	hx = 8.0 / (PetscReal) (Mx - 1);
 	sx = 1.0 / (hx * hx);
 
 	// Get the complete data array

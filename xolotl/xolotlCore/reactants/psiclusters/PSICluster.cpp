@@ -179,6 +179,7 @@ void PSICluster::setReactionNetwork(
 	// Clear the flux-related arrays
 	reactingPairs.clear();
 	combiningReactants.clear();
+	dissociatingClusters.clear();
 
 	// Set the shared pointer to this cluster
 	thisSharedPtr = getThisSharedPtrFromNetwork();
@@ -196,6 +197,44 @@ void PSICluster::setReactionNetwork(
 	if (dissociationsEnabled) {
 		createDissociationConnectivity();
 	}
+
+	// Shrink the arrays
+	reactingPairs.shrink_to_fit();
+	combiningReactants.shrink_to_fit();
+	dissociatingClusters.shrink_to_fit();
+
+	// Print array size information
+//	std::cout << "Array sizes for " << getName() << " (Id = " << getId() << ")" << std::endl;
+//	std::cout << "reactionConnectivity: size = "
+//			<< reactionConnectivity.size() << ", capacity = "
+//			<< reactionConnectivity.capacity() << ", capacity/size = "
+//			<< ((float) reactionConnectivity.capacity()/
+//					(float) reactionConnectivity.size())
+//			<< std::endl;
+//	std::cout << "dissociationConnectivity: size = "
+//			<< dissociationConnectivity.size() << ", capacity = "
+//			<< dissociationConnectivity.capacity() << ", capacity/size = "
+//			<< ((float) dissociationConnectivity.capacity()/
+//					(float) dissociationConnectivity.size())
+//			<< std::endl;
+//	std::cout << "reactingPairs: size = "
+//			<< reactingPairs.size() << ", capacity = "
+//			<< reactingPairs.capacity() << ", capacity/size = "
+//			<< ((float) reactingPairs.capacity()/
+//					(float) reactingPairs.size())
+//			<< std::endl;
+//	std::cout << "combiningReactants: size = "
+//			<< combiningReactants.size() << ", capacity = "
+//			<< combiningReactants.capacity() << ", capacity/size = "
+//			<< ((float) combiningReactants.capacity()/
+//					(float) combiningReactants.size())
+//			<< std::endl;
+//	std::cout << "dissociatingClusters: size = "
+//			<< dissociatingClusters.size() << ", capacity = "
+//			<< dissociatingClusters.capacity() << ", capacity/size = "
+//			<< ((float) dissociatingClusters.capacity()/
+//					(float) dissociatingClusters.size())
+//			<< std::endl;
 
 	return;
 }

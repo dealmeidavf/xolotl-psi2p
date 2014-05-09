@@ -537,6 +537,7 @@ public:
 	 * ReactionNetwork::getAll() operation.
 	 */
 	virtual std::vector<double> getPartialDerivatives(double temperature) const;
+
 };
 
 } /* end namespace xolotlCore */
