@@ -14,18 +14,22 @@ namespace xolotlViz
 static std::shared_ptr<IVizHandlerRegistry> theHandlerRegistry;
 
 // Create the desired type of handler registry.
-bool initialize() {
-    bool ret = true;
+void initialize(bool useStdRegistry) {
 
+	if (useStdRegistry) {
 #if defined(HAVE_VIZLIB_STD)
-    // we are to use a standard handler registry
-    theHandlerRegistry = std::make_shared<StandardHandlerRegistry>();
+		// we are to use a standard handler registry
+		theHandlerRegistry = std::make_shared<StandardHandlerRegistry>();
 #else
-    // we are to use a dummy handler registry
-    theHandlerRegistry = std::make_shared<DummyHandlerRegistry>();
+		// the dependencies are missing, abort
+		throw("xolotlViz::initialize: unable to build requested standard handler registry because the dependencies are missing.");
 #endif // defined(HAVE_VIZLIB_STD)
+	}
+    else {
+    	theHandlerRegistry = std::make_shared<DummyHandlerRegistry>();
+    }
 
-    return ret;
+    return;
 }
 
 // Provide access to our handler registry.
@@ -33,7 +37,8 @@ std::shared_ptr<IVizHandlerRegistry> getVizHandlerRegistry( void )
 {
     if( !theHandlerRegistry )
     {
-        xolotlViz::initialize();
+    	// It is not initialized yet so throw an error
+        throw("xolotlViz::getVizHandlerRegistry: VizHandlerRegistry has not been correctly initialized.");
     }
 
     return theHandlerRegistry;

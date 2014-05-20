@@ -26,9 +26,6 @@ static inline bool checkPetscError(PetscErrorCode errorCode) {
 	CHKERRQ(errorCode);
 }
 
-//! The xolotlViz handler registry
-auto vizHandlerRegistry = xolotlViz::getVizHandlerRegistry();
-
 //! The pointer to the plot that will be used to visualize the data.
 std::shared_ptr<xolotlViz::IPlot> plot;
 
@@ -997,6 +994,9 @@ PetscErrorCode setupPetscMonitor(TS ts) {
 	// Don't do anything if no option is set
 	if (!bigFlag)
 		PetscFunctionReturn(0);
+
+	xolotlViz::initialize(true);
+	auto vizHandlerRegistry = xolotlViz::getVizHandlerRegistry();
 
 	// Set the monitor to save 1D plot of one concentration
 	if (flag1DPlot) {
