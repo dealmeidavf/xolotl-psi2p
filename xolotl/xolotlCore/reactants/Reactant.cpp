@@ -8,7 +8,7 @@
 using namespace xolotlCore;
 
 Reactant::Reactant() :
-		concentration(0.0e-16), name(""), id(0) {
+		concentration(0.0), name(""), id(0), temperature(0.0) {
 
 	// Temporary definition used to specify the type of performance handler registry
 	// that will be used (standard or dummy).  Currently, the handler registry is set via
@@ -18,13 +18,13 @@ Reactant::Reactant() :
 }
 
 Reactant::Reactant(std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
-		concentration(0.0e-16), name(""), id(0), handlerRegistry(registry) {
+		concentration(0.0), name(""), id(0), temperature(0.0), handlerRegistry(registry) {
 
 }
 
 Reactant::Reactant(const Reactant &other) :
 		concentration(other.concentration), name(other.name), id(other.id),
-		compositionMap(other.compositionMap), handlerRegistry(other.handlerRegistry) {
+		compositionMap(other.compositionMap), temperature(0.0), handlerRegistry(other.handlerRegistry), typeName(other.typeName)  {
 }
 
 Reactant::~Reactant() {
@@ -60,7 +60,7 @@ void Reactant::setConcentration(double conc) {
 }
 
 void Reactant::zero() {
-	concentration = 0.0e-16;
+	concentration = 0.0;
 	return;
 }
 
@@ -111,6 +111,10 @@ std::vector<double> Reactant::getPartialDerivatives(double temperature) const {
  */
 const std::string Reactant::getName() const {
 	return name;
+}
+
+std::string Reactant::getType() const {
+	return typeName;
 }
 
 const std::string Reactant::toString() {

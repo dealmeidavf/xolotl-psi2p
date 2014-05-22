@@ -50,7 +50,7 @@ private:
 	 * The map of single-species clusters, indexed by a map that contains the
 	 * name of the reactant and its size.
 	 */
-	std::unordered_map<std::map<std::string, int>, std::shared_ptr<PSICluster>> singleSpeciesMap;
+	std::unordered_map<std::map<std::string,int>, std::shared_ptr<PSICluster>> singleSpeciesMap;
 
 	/**
 	 * The map of mixed or compound species clusters, indexed by a map that
@@ -80,6 +80,11 @@ private:
 	 * that are added to the network.
 	 */
 	int networkSize;
+
+	/**
+	 * The current temperature at which the network's clusters exist.
+	 */
+	double temperature;
 
 	/**
 	 * The list of all of the reactants in the network. This list is filled and
@@ -112,26 +117,43 @@ public:
 	PSIClusterReactionNetwork(const PSIClusterReactionNetwork &other);
 
 	/**
+	 * This operation sets the temperature at which the reactants currently
+	 * exists. It calls setTemperature() on each reactant.
+	 *
+	 * This is the simplest way to set the temperature for all reactants is to
+	 * call the ReactionNetwork::setTemperature() operation.
+	 *
+	 * @param temp The new temperature
+	 */
+	virtual void setTemperature(double temp);
+
+	/**
+	 * This operation returns the temperature at which the cluster currently exists.
+	 * @return The temperature.
+	 */
+	virtual double getTemperature() const;
+
+	/**
 	 * This operation returns a reactant with the given name and size if it
 	 * exists in the network or null if not.
-	 * @param rName the name of the reactant
+	 * @param type the type of the reactant
 	 * @param size the size of the reactant
 	 * @return A shared pointer to the reactant
 	 */
-	std::shared_ptr<Reactant> get(const std::string rName,
+	std::shared_ptr<Reactant> get(const std::string type,
 			const int size) const;
 
 	/**
 	 * This operation returns a compound reactant with the given name and size
 	 * if it exists in the network or null if not.
-	 * @param rName the name of the compound reactant
+	 * @param type the type of the compound reactant
 	 * @param sizes an array containing the sizes of each piece of the reactant.
 	 * For PSIClusters, this array must be ordered in size by He, V and I. This
 	 * array must contain an entry for He, V and I, even if only He and V or He
 	 * and I are contained in the mixed-species cluster.
 	 * @return A shared pointer to the compound reactant
 	 */
-	std::shared_ptr<Reactant> getCompound(const std::string rName,
+	std::shared_ptr<Reactant> getCompound(const std::string type,
 			const std::vector<int> sizes) const;
 
 	/**

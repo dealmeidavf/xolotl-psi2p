@@ -1,8 +1,9 @@
 // Includes
 #include "PetscSolver.h"
-#include "../xolotlPerf/HandlerRegistryFactory.h"
+#include <HandlerRegistryFactory.h>
 #include "FitFluxHandler.h"
 #include "TemperatureHandler.h"
+#include <MathUtils.h>
 #include <petscts.h>
 #include <petscsys.h>
 #include <sstream>
@@ -97,6 +98,12 @@ PetscInt He, *ofill, *dfill;
  * the dfill array.
  */
 static std::unordered_map<int, std::vector<int> > dFillMap;
+
+/**
+ * The last temperature on the grid. In the future this will have to be an
+ * array or map, but for now the temperature is isotropic.
+ */
+static double lastTemperature = 0.0;
 
 /* ----- Error Handling Code ----- */
 
@@ -228,7 +235,7 @@ void computeDiffusion(std::shared_ptr<PSICluster> cluster, double temp,
 	oldLeftConc = leftConcOffset[reactantIndex];
 	oldRightConc = rightConcOffset[reactantIndex];
 	// Use a simple midpoint stencil to compute the concentration
-	conc = cluster->getDiffusionCoefficient(temp)
+	conc = cluster->getDiffusionCoefficient()
 			* (-2.0 * oldConc + oldLeftConc + oldRightConc) * sx;
 
 	// Update the concentration of the cluster
@@ -354,6 +361,12 @@ PetscErrorCode RHSFunction(TS ts, PetscReal ftime, Vec C, Vec F, void *ptr) {
 		auto temperature = temperatureHandler->getTemperature(gridPosition,
 				realTime);
 
+		// Update the network if the temperature changed
+		if (!xolotlCore::equal(temperature,lastTemperature)) {
+			network->setTemperature(temperature);
+			lastTemperature = temperature;
+		}
+
 		//xi = 4; // Debugging
 
 		// Compute the middle, left, right and new array offsets
@@ -477,7 +490,7 @@ void computePartialsForDiffusion(std::shared_ptr<PSICluster> cluster,
 	int reactantIndex = 0;
 	double diffCoeff = 0.0;
 
-	diffCoeff = cluster->getDiffusionCoefficient(temp);
+	diffCoeff = cluster->getDiffusionCoefficient();
 	// Compute the partial derivatives for diffusion of this cluster
 	val[0] = diffCoeff * sx;
 	val[1] = -2.0 * diffCoeff * sx;
@@ -707,13 +720,6 @@ PetscErrorCode RHSJacobian(TS ts, PetscReal ftime, Vec C, Mat A, Mat J,void *ptr
 			// Get the partial derivatives
 			allPartialsForCluster = reactant->getPartialDerivatives(
 					temperature);
-			// Set the row indices
-			psiCluster = std::dynamic_pointer_cast < PSICluster > (reactant);
-//			std::cout << xi << " " << xs << " " << size << " " << (xi - xs + 1)*size << std::endl;
-//			std::cout << "PD for " << psiCluster->getName() << "_" << psiCluster->getSize() << " at " << reactantIndex << std::endl;
-//			for (int k = 0; k < allPartialsForCluster.size(); k++) {
-//				std::cout << "pd[" << k << "] = " << allPartialsForCluster[k] << std::endl;
-//			}
 			// Get the list of column ids from the map
 			auto pdColIdsVector = dFillMap.at(reactantIndex);
 			pdColIdsVectorSize = pdColIdsVector.size(); //Number of partial derivatives
@@ -724,7 +730,6 @@ PetscErrorCode RHSJacobian(TS ts, PetscReal ftime, Vec C, Mat A, Mat J,void *ptr
 				// Get the partial derivative from the array of all of the partials
 				reactingPartialsForCluster[j] =
 						allPartialsForCluster[pdColIdsVector[j]];
-//				std::cout << "dp[" << j << "] = " << pdColIdsVector[j] << " , [r,c] = "<< "[" << rowId << "," << localPDColIds[j] << "] = " << reactingPartialsForCluster[j]<< std::endl;
 			}
 			// Update the matrix
 			ierr = MatSetValuesLocal(J, 1, &rowId, pdColIdsVectorSize,

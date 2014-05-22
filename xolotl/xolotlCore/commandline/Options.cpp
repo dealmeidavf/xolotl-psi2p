@@ -97,7 +97,7 @@ Options::parseCommandLine( int argc, char* argv[] )
         }
     }
 
-    return i-1;
+    return i;
 }
 
 

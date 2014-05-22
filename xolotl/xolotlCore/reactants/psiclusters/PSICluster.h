@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 #include <unordered_map>
+#include <sstream>
 
 namespace xolotlCore {
 
@@ -20,7 +21,8 @@ namespace xolotlCore {
  * passed a size of zero or less, the actual size will be set to 1.
  *
  * The getComposition() operation is implemented by subclasses and will always
- * return a map with the keys He, V, I, HeV or HeI.
+ * return a map with the keys He, V, I, HeV or HeI. The operation getTypeName()
+ * will always return one of the same values.
  */
 class PSICluster: public Reactant {
 
@@ -53,6 +55,14 @@ protected:
 	 * coefficient for this cluster. The default value is 0 (does not diffuse).
 	 */
 	double diffusionFactor;
+
+	/**
+	 * The diffusion coefficient computed from the diffusion factor using an
+	 * Arrhenius rate equation. It is re-computed every time the temperature is
+	 * updated.
+	 */
+	double diffusionCoefficient;
+
 
 	/**
 	 * The shared pointer to this cluster in the network. It is assigned in
@@ -392,6 +402,14 @@ protected:
 	std::set<int> getDissociationConnectivitySet() const;
 
 	/**
+	 * This operation recomputes the diffusion coefficient. It is called
+	 * whenever the diffusion factor, migration energy or temperature change.
+	 *
+	 * @param temp the temperature
+	 */
+	void recomputeDiffusionCoefficient(double temp);
+
+	/**
 	 * This constructor is protected because PSIClusters must always be
 	 * initialized with a size.
 	 */
@@ -538,7 +556,7 @@ public:
 	 * @param temperature The temperature at which to calculate the Diffusion Coefficient
 	 * @return The diffusion coefficient.
 	 */
-	virtual double getDiffusionCoefficient(double temperature) const;
+	virtual double getDiffusionCoefficient() const;
 
 	/**
 	 * This operation sets the migration energy for this cluster.
@@ -587,6 +605,41 @@ public:
 	 * ReactionNetwork::getAll() operation.
 	 */
 	virtual std::vector<double> getPartialDerivatives(double temperature) const;
+
+	/**
+	 * This operation overrides Reactant's setTemperature operation to
+	 * correctly recompute the diffusion coefficient and other
+	 * temperature-dependent quantities when the temperature is set.
+	 * @param temp
+	 */
+	virtual void setTemperature(double temp);
+
+	/**
+	 * A utility operation to encode composition of a cluster as a unique name.
+	 *
+	 * This operation is used by all of the clusters to obtain their names and
+	 * and it can be used by client classes to encode a composition vector into
+	 * unique cluster name that will be semantically correct without making
+	 * assumptions.
+	 * @param composition The composition that should be encoded
+	 * @return The encoded composition
+	 */
+	static std::string encodeCompositionAsName(std::map<std::string,int> composition) {
+
+		// Get the component sizes
+		int numHe = composition["He"];
+		int numV = composition["V"];
+		int numI = composition["I"];
+
+		// Create the stream
+		std::stringstream nameStream;
+		if (numHe > 0) nameStream << "He_" << numHe;
+		if (numV > 0) nameStream << "V_" << numV;
+		if (numI > 0) nameStream << "I_" << numI;
+
+		// Return the name
+		return nameStream.str();
+	}
 
 };
 

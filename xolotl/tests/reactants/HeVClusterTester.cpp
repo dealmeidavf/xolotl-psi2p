@@ -64,6 +64,8 @@ BOOST_AUTO_TEST_CASE(checkConnectivity) {
 		vector<int> composition = {3, 2, 0 };
 		auto reactant = dynamic_pointer_cast < PSICluster
 				> (network->getCompound("HeV", composition));
+		// Check the type name
+		BOOST_REQUIRE_EQUAL("HeV",reactant->getType());
 		auto reactionConnectivity = reactant->getConnectivity();
 		
 		BOOST_REQUIRE_EQUAL(reactant->getComposition().at("He"), 3);
@@ -131,6 +133,7 @@ BOOST_AUTO_TEST_CASE(checkTotalFlux) {
 	cluster->setMigrationEnergy(numeric_limits<double>::infinity());
 	vector<double> energies = {3.02, 7.25,
 			numeric_limits<double>::infinity(), 10.2};
+	cluster->setTemperature(1000.0);
 	cluster->setBindingEnergies(energies);
 	cluster->setConcentration(0.5);
 
@@ -138,6 +141,7 @@ BOOST_AUTO_TEST_CASE(checkTotalFlux) {
 	// values from the tungsten benchmark for this problem for the second cluster
 	secondCluster->setDiffusionFactor(2.950E+10);
 	secondCluster->setMigrationEnergy(0.13);
+	secondCluster->setTemperature(1000.0);
 	energies = {numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
 			numeric_limits<double>::infinity(), 8.27};
 	secondCluster->setBindingEnergies(energies);

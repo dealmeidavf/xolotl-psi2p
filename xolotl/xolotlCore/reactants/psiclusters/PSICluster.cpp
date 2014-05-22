@@ -1,5 +1,5 @@
 #include "PSICluster.h"
-#include "xolotlPerf/HandlerRegistryFactory.h"
+#include "HandlerRegistryFactory.h"
 #include <Constants.h>
 #include <iostream>
 
@@ -20,9 +20,11 @@ PSICluster::PSICluster() :
 	bindingEnergies[3] = 0.0;
 	// Zero out the diffusion factor and migration energy
 	diffusionFactor = 0.0;
+	diffusionCoefficient = 0.0;
 	migrationEnergy = 0.0;
 	// Set the reactant name appropriately
 	name = "PSICluster";
+	// No type name to set. Leave it empty.
 	// Setup the composition map.
 	compositionMap["He"] = 0;
 	compositionMap["V"] = 0;
@@ -49,6 +51,7 @@ PSICluster::PSICluster(const int clusterSize,
 	bindingEnergies[3] = 0.0;
 	// Zero out the diffusion factor and migration energy
 	diffusionFactor = 0.0;
+	diffusionCoefficient = 0.0;
 	migrationEnergy = 0.0;
 	// Set the reactant name appropriately
 	name = "PSICluster";
@@ -77,6 +80,9 @@ PSICluster::PSICluster(const PSICluster &other) :
 				other.reactionConnectivitySet), dissociationConnectivitySet(
 				other.dissociationConnectivitySet) {
 
+	// Recompute all of the temperature-dependent quantities
+	setTemperature(other.getTemperature());
+
 	// Set up an event counter to count the number of times getDissociationFlux is called
 	getDissociationFluxCounter = handlerRegistry->getEventCounter(
 			"getDissociationFlux_Counter");
@@ -89,15 +95,10 @@ std::shared_ptr<Reactant> PSICluster::clone() {
 }
 
 std::shared_ptr<PSICluster> PSICluster::getThisSharedPtrFromNetwork() const {
-	return std::dynamic_pointer_cast<PSICluster>(network->get(name, size));
+	return std::dynamic_pointer_cast<PSICluster>(network->get(typeName, size));
 }
 
-PSICluster::~PSICluster() {
-
-	std::cout << "PSICluster: Called getDissociationFlux "
-			<< getDissociationFluxCounter->getValue() << " times" << std::endl;
-
-}
+PSICluster::~PSICluster() {}
 
 /**
  * This operation prints a forward reaction given the three reactants in
@@ -161,16 +162,16 @@ void PSICluster::printDissociation(const Reactant & firstReactant,
  * @param connSet The set that should be expanded into the vector.
  * @return The connectivity vector.
  */
-static std::vector<int> getFullConnectivityVector(std::set<int> connectivitySet, int size) {
+static std::vector<int> getFullConnectivityVector(std::set<int> connectivitySet,
+		int size) {
 
 	// Create a vector of zeroes with size equal to the network size
 	std::vector<int> connectivity(size);
 
 	// Set the value of the connectivity array to one for each element that is
 	// in the set.
-	for (auto it = connectivitySet.begin();
-			it != connectivitySet.end(); it++) {
-		connectivity[*it-1] = 1;
+	for (auto it = connectivitySet.begin(); it != connectivitySet.end(); it++) {
+		connectivity[*it - 1] = 1;
 	}
 
 	return connectivity;
@@ -187,7 +188,7 @@ void PSICluster::setReactionConnectivity(int clusterId) {
 
 std::vector<int> PSICluster::getReactionConnectivity() const {
 	// Create the full vector from the set and return it
-	return getFullConnectivityVector(reactionConnectivitySet,network->size());
+	return getFullConnectivityVector(reactionConnectivitySet, network->size());
 }
 
 std::set<int> PSICluster::getReactionConnectivitySet() const {
@@ -205,7 +206,8 @@ void PSICluster::setDissociationConnectivity(int clusterId) {
 
 std::vector<int> PSICluster::getDissociationConnectivity() const {
 	// Create the full vector from the set and return it
-	return getFullConnectivityVector(dissociationConnectivitySet,network->size());
+	return getFullConnectivityVector(dissociationConnectivitySet,
+			network->size());
 }
 
 std::set<int> PSICluster::getDissociationConnectivitySet() const {
@@ -315,6 +317,10 @@ double PSICluster::getDissociationFlux(double temperature) const {
 
 			// ----- This doesn't seem completely correct. REVIEW!!!!! -----
 
+			// Get the single species cluster that comes out with it
+			singleSpeciesCluster = std::dynamic_pointer_cast<PSICluster>(
+					network->get(typeName, 1));
+
 			// Set the total number of reactants that dissociate to form this one
 			nClusters = dissociatingClusters.size();
 			// Loop over all dissociating clusters that form this cluster
@@ -322,14 +328,10 @@ double PSICluster::getDissociationFlux(double temperature) const {
 				dissociatingCluster = dissociatingClusters[j];
 				// Since we know that the other cluster has to be the same type as
 				// this one, we can just pull the size from the composition.
-				smallerClusterSize = dissociatingCluster->getComposition().at(
-						name) - 1;
+				smallerClusterSize = dissociatingCluster->getComposition().at(typeName) - 1;
 				// Get the cluster one size smaller than the dissociating cluster.
 				smallerCluster = std::dynamic_pointer_cast<PSICluster>(
-						network->get(name, smallerClusterSize));
-				// Get the single species cluster that comes out with it
-				singleSpeciesCluster = std::dynamic_pointer_cast<PSICluster>(
-						network->get(name, 1));
+						network->get(typeName, smallerClusterSize));
 				// Calculate Second term of Dissociation flux
 				if (smallerCluster) {
 					flux += fluxMultiplier
@@ -456,14 +458,13 @@ double PSICluster::getDiffusionFactor() const {
 void PSICluster::setDiffusionFactor(const double factor) {
 	// Set the diffusion factor
 	diffusionFactor = factor;
+	// Update the diffusion coefficient
+	recomputeDiffusionCoefficient(getTemperature());
 	return;
 }
 
-double PSICluster::getDiffusionCoefficient(double temperature) const {
-	// Use the Arrhenius equation to compute the diffusion coefficient
-	double k_b = xolotlCore::kBoltzmann;
-	double kernel = -1.0 * migrationEnergy / (k_b * temperature);
-	return diffusionFactor * exp(kernel);
+double PSICluster::getDiffusionCoefficient() const {
+	return diffusionCoefficient;
 }
 
 std::vector<double> PSICluster::getBindingEnergies() const {
@@ -491,6 +492,8 @@ double PSICluster::getMigrationEnergy() const {
 void PSICluster::setMigrationEnergy(const double energy) {
 	// Set the migration energy
 	migrationEnergy = energy;
+	// Update the diffusion coefficient
+	recomputeDiffusionCoefficient(getTemperature());
 	return;
 }
 
@@ -503,9 +506,8 @@ double PSICluster::calculateReactionRateConstant(
 	double r_second = secondReactant.getReactionRadius();
 
 	// Get the diffusion coefficients
-	double firstDiffusion = firstReactant.getDiffusionCoefficient(temperature);
-	double secondDiffusion = secondReactant.getDiffusionCoefficient(
-			temperature);
+	double firstDiffusion = firstReactant.getDiffusionCoefficient();
+	double secondDiffusion = secondReactant.getDiffusionCoefficient();
 
 //	std::cout << "Handling reaction: " << firstReactant.getName() << "_"
 //			<< firstReactant.getSize() << " + " << secondReactant.getName()
@@ -529,7 +531,7 @@ double PSICluster::calculateDissociationConstant(
 	auto otherComposition = firstCluster.getComposition();
 
 	// Get the binding energy index.
-	bindingEnergyIndex = bindingEnergyIndexMap[firstCluster.getName()];
+	bindingEnergyIndex = bindingEnergyIndexMap[firstCluster.typeName];
 	// The atomic volume is computed by considering the BCC structure of the
 	// tungsten. In a given lattice cell in tungsten there are tungsten atoms
 	// at each corner and a tungsten atom in the center. The tungsten atoms at
@@ -616,8 +618,8 @@ void PSICluster::createDissociationConnectivity() {
 	std::shared_ptr<Reactant> smallerReactant, singleReactant;
 
 	// ----- X_a --> X_(a-1) + X ------
-	smallerReactant = network->get(name, size - 1);
-	singleReactant = network->get(name, 1);
+	smallerReactant = network->get(typeName, size - 1);
+	singleReactant = network->get(typeName, 1);
 	dissociateClusters(singleReactant, smallerReactant);
 
 	return;
@@ -794,7 +796,7 @@ void PSICluster::getDissociationPartialDerivatives(
 	// Get the single species cluster that comes out of this one during the
 	// dissociation process.
 	singleSpeciesCluster = std::dynamic_pointer_cast<PSICluster>(
-			network->get(name, 1));
+			network->get(typeName, 1));
 
 	// Load up everything from the dissociating reactants. The partial
 	// derivative for dissociation is just the dissociation constant between
@@ -808,10 +810,10 @@ void PSICluster::getDissociationPartialDerivatives(
 		// this one, we can just pull the size from the composition.
 //		std::cout << name << "_" << size << " d_COMP = " << cluster->getName()
 //				<< "_" << cluster->getComposition()[name] << std::endl;
-		smallerClusterSize = cluster->getComposition().at(name) - 1;
+		smallerClusterSize = cluster->getComposition().at(typeName) - 1;
 		// Get the cluster one size smaller than the dissociating cluster.
 		smallerCluster = std::dynamic_pointer_cast<PSICluster>(
-				network->get(name, smallerClusterSize));
+				network->get(typeName, smallerClusterSize));
 		// Compute the contribution from the smaller cluster
 		index = cluster->getId() - 1;
 		// Only modify the derivative if the smaller cluster exists
@@ -938,7 +940,7 @@ void PSICluster::replaceInCompound(
 				productCompositionVector[1] = productReactantComp["V"];
 				productCompositionVector[2] = productReactantComp["I"];
 				// Get the product
-				productReactant = network->getCompound(secondReactant->getName(),
+				productReactant = network->getCompound(secondReactant->getType(),
 						productCompositionVector);
 				// If the product exists, mark the proper reaction arrays and it it to the list
 				if (productReactant) {
@@ -968,7 +970,7 @@ void PSICluster::fillVWithI(std::string secondClusterName,
 		std::shared_ptr<std::vector<std::shared_ptr<Reactant> > > reactants) {
 	// Local Declarations
 	std::shared_ptr<PSICluster> secondCluster, productCluster, thisCluster;
-	std::string firstClusterName = getName(), productClusterName;
+	std::string firstClusterName = typeName, productClusterName;
 	int firstClusterSize = 0, secondClusterSize = 0, productClusterSize = 0;
 	int secondId = 0, productId = 0, reactantVecSize = 0;
 	ReactingPair pair;
@@ -1041,4 +1043,30 @@ void PSICluster::fillVWithI(std::string secondClusterName,
 			}
 		}
 	}
+}
+
+void PSICluster::recomputeDiffusionCoefficient(double temp) {
+
+	// Return zero if the diffusion factor is zero.
+	if (diffusionFactor == 0.0) {
+		diffusionCoefficient = 0.0;
+	} else {
+		// Otherwise use the Arrhenius equation to compute the diffusion
+		// coefficient
+		double k_b = xolotlCore::kBoltzmann;
+		double kernel = -1.0 * migrationEnergy / (k_b * temp);
+		diffusionCoefficient = diffusionFactor * exp(kernel);
+	}
+
+	return;
+}
+
+void PSICluster::setTemperature(double temp) {
+	// Set the temperature
+	Reactant::setTemperature(temp);
+
+	// Recompute the diffusion coefficient
+	recomputeDiffusionCoefficient(temp);
+
+	return;
 }

@@ -14,12 +14,16 @@ HeVCluster::HeVCluster(int numHe, int numV,
 	// the number of Helium and Vacancies
 	size = numHe + numV;
 
-	// Set the reactant name appropriately
-	name = "HeV";
-
 	// Update the composition map
 	compositionMap["He"] = numHe;
 	compositionMap["V"] = numV;
+
+	// Set the reactant name appropriately
+	std::stringstream nameStream;
+	nameStream << "He_" << numHe << "V_" << numV;
+	name = nameStream.str();
+	// Set the typename appropriately
+	typeName = "HeV";
 
 	// Compute the reaction radius
 	reactionRadius = (sqrt(3.0) / 4.0) * xolotlCore::latticeConstant
@@ -46,7 +50,7 @@ std::shared_ptr<PSICluster> HeVCluster::getThisSharedPtrFromNetwork() const {
 	std::vector<int> compVec = { composition["He"], composition["V"],
 			composition["I"] };
 	return std::dynamic_pointer_cast<PSICluster>(
-			network->getCompound(name, compVec));
+			network->getCompound("HeV", compVec));
 }
 
 std::shared_ptr<Reactant> HeVCluster::clone() {

@@ -41,9 +41,20 @@ protected:
 	 */
 	std::string name;
 
+	/**
+	 * The type name of the reactant.
+	 */
+	std::string typeName;
+
 	/** An integer identification number for this reactant.
 	 */
 	int id;
+
+	/**
+	 * The temperature t which the cluster currently exists. The diffusion
+	 * coefficient is recomputed each time the temperature is changed.
+	 */
+	double temperature;
 
 	/** The reaction network that includes this reactant.
 	 */
@@ -204,6 +215,13 @@ public:
 	const std::string getName() const;
 
 	/**
+	 * This operation returns the reactant's type. It is up to subclasses to
+	 * define exactly what the allowed types may be.
+	 * @return The type of this reactant as a string.
+	 */
+	std::string getType() const;
+
+	/**
 	 * This operation returns the compositon of this reactant. This map is empty
 	 * when returned by the base class.
 	 * @return The composition returned as a map with keys naming distinct
@@ -228,6 +246,33 @@ public:
 	int getId() const {
 		return id;
 	}
+
+	/**
+	 * This operation sets the temperature at which the reactant currently
+	 * exists. Temperature-dependent quantities are recomputed when this
+	 * operation is called, so the temperature should always be set first.
+	 *
+	 * The simplest way to set the temperature for all reactants is to call the
+	 * ReactionNetwork::setTemperature() operation.
+	 *
+	 * The base class implementation only stores the temperature value.
+	 * Subclasses are responsible for implementing their own update
+	 * calculations and for calling setTemperature() in their copy constructors.
+	 *
+	 * @param temp The new cluster temperature
+	 */
+	virtual void setTemperature(double temp) {
+		temperature = temp;
+	}
+
+	/**
+	 * This operation returns the temperature at which the reactant currently exists.
+	 * @return The temperature.
+	 */
+	double getTemperature() const {
+		return temperature;
+	}
+
 };
 
 } // end namespace xolotlCore

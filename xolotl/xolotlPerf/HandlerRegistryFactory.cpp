@@ -1,11 +1,12 @@
 #include "XolotlConfigPerf.h"
 #include "HandlerRegistryFactory.h"
-#include <DummyHandlerRegistry.h>
+#include "dummy/DummyHandlerRegistry.h"
 #include <iostream>
 
 #if defined(HAVE_PERFLIB_STD)
-#include <StandardHandlerRegistry.h>
+#include "standard/StandardHandlerRegistry.h"
 #endif // defined(HAVE_PERFLIB_STD)
+
 
 namespace xolotlPerf
 {
@@ -29,7 +30,8 @@ initialize( bool useStdRegistry,
 #else
         // TODO is there another mechanism for writing errors
         // e.g., one that logs error messages?
-        throw std::string("\nxolotlPerf::initialize: unable to build requested standard handler registry due to missing dependencies");
+        std::cerr << "xolotlPerf::initialize: unable to build requested standard handler registry" << std::endl;
+        ret = false;
 #endif // defined(HAVE_PERFLIB_STD)
     }
     else
@@ -44,13 +46,19 @@ initialize( bool useStdRegistry,
     return ret;
 }
 
+
+
+
 // Provide access to our handler registry.
 std::shared_ptr<IHandlerRegistry> getHandlerRegistry( void )
 {
     if( !theHandlerRegistry )
     {
-        // Throw an error since we have not yet been initialized
-        throw std::string("\nxolotlPerf handler registry requested, but library has not been initialized");
+        // We have not yet been initialized.
+        // Issue a warning and use a dummy (stub) registry.
+        std::cerr << "Warning: xolotlPerf handler registry requested, but library has not been initialized; using dummy handlers" << std::endl;
+
+        xolotlPerf::initialize( false );
     }
     return theHandlerRegistry;
 }

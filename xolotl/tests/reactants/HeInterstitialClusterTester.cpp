@@ -62,6 +62,8 @@ BOOST_AUTO_TEST_CASE(checkConnectivity) {
 		vector<int> composition = {5, 0, 3 };
 		auto reactant = dynamic_pointer_cast < PSICluster
 				> (network->getCompound("HeI", composition));
+		// Check the type name
+		BOOST_REQUIRE_EQUAL("HeI",reactant->getType());
 		auto reactionConnectivity = reactant->getConnectivity();
 		
 		BOOST_REQUIRE_EQUAL(reactant->getComposition().at("He"), 5);
@@ -131,6 +133,7 @@ BOOST_AUTO_TEST_CASE(checkTotalFlux) {
 	// Set the diffusion factor, migration and binding energies to arbitrary
 	// values because HeI does not exist in benchmarks
 	cluster->setDiffusionFactor(1.5E+10);
+ 	cluster->setTemperature(1000.0);
 	cluster->setMigrationEnergy(numeric_limits<double>::infinity());
 	vector<double> energies = {5.09, numeric_limits<double>::infinity(),
 			5.09, 12.6};
@@ -145,6 +148,7 @@ BOOST_AUTO_TEST_CASE(checkTotalFlux) {
 			numeric_limits<double>::infinity(), numeric_limits<double>::infinity()};
 	secondCluster->setBindingEnergies(energies);
 	secondCluster->setConcentration(0.5);
+ 	secondCluster->setTemperature(1000.0);
 	// The flux can pretty much be anything except "not a number" (nan).
 	double flux = cluster->getTotalFlux(1000.0);
 	BOOST_TEST_MESSAGE("HeInterstitialClusterTester Message: \n" << "Total Flux is " << flux << "\n"

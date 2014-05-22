@@ -14,12 +14,16 @@ HeInterstitialCluster::HeInterstitialCluster(int numHelium, int numInterstitial,
 	// the number of Helium and Interstitials
 	size = numHe + numI;
 
-	// Set the reactant name appropriately
-	name = "HeI";
-
 	// Update the composition map
 	compositionMap["He"] = numHe;
 	compositionMap["I"] = numI;
+
+	// Set the reactant name appropriately
+	std::stringstream nameStream;
+	nameStream << "He_" << numHe << "I_" << numI;
+	name = nameStream.str();
+	// Set the typename appropriately
+	typeName = "HeI";
 
 	// Compute the reaction radius
 	reactionRadius = (sqrt(3.0) / 4.0) * xolotlCore::latticeConstant
@@ -46,7 +50,7 @@ std::shared_ptr<PSICluster> HeInterstitialCluster::getThisSharedPtrFromNetwork()
 	std::vector<int> compVec = { composition["He"], composition["V"],
 			composition["I"] };
 	return std::dynamic_pointer_cast<PSICluster>(
-			network->getCompound(name, compVec));
+			network->getCompound("HeI", compVec));
 }
 
 std::shared_ptr<Reactant> HeInterstitialCluster::clone() {

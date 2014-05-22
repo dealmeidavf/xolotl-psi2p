@@ -8,10 +8,16 @@ using namespace xolotlCore;
 
 VCluster::VCluster(int nV, std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
 		PSICluster(nV, registry) {
+
 	// Set the reactant name appropriately
-	name = "V";
+	std::stringstream nameStream;
+	nameStream << "V_" << size;
+	name = nameStream.str();
+	// Set the typename appropriately
+	typeName = "V";
+
 	// Update the composition map
-	compositionMap[name] = size;
+	compositionMap["V"] = size;
 
 	// Compute the reaction radius
 	// FIXME Not right...
@@ -105,7 +111,7 @@ void VCluster::createReactionConnectivity() {
 		firstReactant = std::dynamic_pointer_cast<PSICluster>(reactants->at(i));
 		// Get the interstitial cluster that is bigger than the vacancy
 		// and can form this cluster. V only results when it is bigger than I.
-		secondReactant = std::dynamic_pointer_cast<PSICluster>(network->get(name,firstReactant->getSize() + size));
+		secondReactant = std::dynamic_pointer_cast<PSICluster>(network->get("V",firstReactant->getSize() + size));
 		// Update the connectivity
 		if (secondReactant) {
 			setReactionConnectivity(firstReactant->getId());

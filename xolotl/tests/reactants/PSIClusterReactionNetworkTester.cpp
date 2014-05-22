@@ -66,6 +66,7 @@ BOOST_AUTO_TEST_CASE(checkCompositionCreation) {
 	BOOST_REQUIRE_EQUAL(0, badComp[1]);
 	BOOST_REQUIRE_EQUAL(0, badComp[2]);
 
+	return;
 }
 
 BOOST_AUTO_TEST_CASE(checkReactants) {
@@ -85,20 +86,20 @@ BOOST_AUTO_TEST_CASE(checkReactants) {
 	auto retHeCluster = dynamic_pointer_cast<PSICluster>(
 			psiNetwork->get("He", 10));
 	BOOST_REQUIRE(retHeCluster);
-	BOOST_REQUIRE_EQUAL("He", retHeCluster->getName());
+	BOOST_REQUIRE_EQUAL("He_10", retHeCluster->getName());
 	BOOST_REQUIRE_EQUAL(10, retHeCluster->getSize());
 	// V
 	auto retVCluster = dynamic_pointer_cast<PSICluster>(
 			psiNetwork->get("V", 4));
 	BOOST_REQUIRE(retVCluster);
 	BOOST_REQUIRE_EQUAL(4, retVCluster->getSize());
-	BOOST_REQUIRE_EQUAL("V", retVCluster->getName());
+	BOOST_REQUIRE_EQUAL("V_4", retVCluster->getName());
 	// I
 	auto retICluster = dynamic_pointer_cast<PSICluster>(
 			psiNetwork->get("I", 48));
 	BOOST_REQUIRE(retICluster);
 	BOOST_REQUIRE_EQUAL(48, retICluster->getSize());
-	BOOST_REQUIRE_EQUAL("I", retICluster->getName());
+	BOOST_REQUIRE_EQUAL("I_48", retICluster->getName());
 
 	// Check the getter for all reactants
 	auto clusters = psiNetwork->getAll();
@@ -164,25 +165,26 @@ BOOST_AUTO_TEST_CASE(checkReactants) {
 	// Get the clusters by type and check them. Start with He.
 	reactants = psiNetwork->getAll("He");
 	BOOST_REQUIRE_EQUAL(1, reactants->size());
-	BOOST_REQUIRE_EQUAL("He", reactants->at(0)->getName());
+	BOOST_REQUIRE_EQUAL("He_10", reactants->at(0)->getName());
 	// V
 	reactants = psiNetwork->getAll("V");
 	BOOST_REQUIRE_EQUAL(1, reactants->size());
-	BOOST_REQUIRE_EQUAL("V", reactants->at(0)->getName());
+	BOOST_REQUIRE_EQUAL("V_4", reactants->at(0)->getName());
 	// I
 	reactants = psiNetwork->getAll("I");
 	BOOST_REQUIRE_EQUAL(1, reactants->size());
-	BOOST_REQUIRE_EQUAL("I", reactants->at(0)->getName());
+	BOOST_REQUIRE_EQUAL("I_48", reactants->at(0)->getName());
 	// HeV
 	reactants = psiNetwork->getAll("HeV");
 	BOOST_REQUIRE_EQUAL(45, reactants->size());
-	BOOST_REQUIRE_EQUAL("HeV", reactants->at(0)->getName());
+
 	// HeI
 	reactants = psiNetwork->getAll("HeI");
 	BOOST_REQUIRE_EQUAL(36, reactants->size());
-	BOOST_REQUIRE_EQUAL("HeI", reactants->at(0)->getName());
 
-	// Try to get something that obviously isn't there
+	// Try changing the temperature and make sure it works
+	psiNetwork->setTemperature(1000.0);
+	BOOST_REQUIRE_CLOSE(1000.0,reactants->at(0)->getTemperature(),0.0001);
 
 	return;
 }
