@@ -1,9 +1,9 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE Regression
 
-#include <string>
 #include <boost/test/included/unit_test.hpp>
-#include "xolotlPerf/dummy/DummyEventCounter.h"
+#include <DummyEventCounter.h>
+#include <string>
 
 using namespace std;
 using namespace xolotlPerf;

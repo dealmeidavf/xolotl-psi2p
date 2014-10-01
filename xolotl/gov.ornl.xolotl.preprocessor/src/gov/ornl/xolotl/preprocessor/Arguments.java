@@ -157,7 +157,8 @@ public interface Arguments {
 	@Option(defaultValue = "-da_grid_x 10 -ts_final_time 50 -ts_dt 1.0e-12 "
 			+ "-ts_max_steps 100 -ts_adapt_dt_max 10 -ts_max_snes_failures 200 "
 			+ "-pc_type fieldsplit -pc_fieldsplit_detect_coupling -fieldsplit_0_pc_type redundant "
-			+ "-fieldsplit_1_pc_type sor -snes_monitor -ksp_monitor -ts_monitor", description = "List of arguments to be passed to PETSc")
+			+ "-fieldsplit_1_pc_type sor -snes_monitor -ksp_monitor -ts_monitor", 
+			description = "List of arguments to be passed to PETSc")
 	/**
 	 * This operation produces the required command line option '--petscArgs' which 
 	 * takes a single string value and is defined by the previous Option annotation
@@ -186,27 +187,6 @@ public interface Arguments {
 	 * @return The name of the network file
 	 */
 	String getNetworkFile();
-
-	/**
-	 * This Option annotation corresponds to the '--stepSize' option which
-	 * defines a default step size and additionally provides a brief description 
-	 * of the option.
-	 * 
-	 * @param defaultValue
-	 *            The default step size that will be used if this option
-	 *            is not specified via the command line
-	 * @param description
-	 *            Brief description of this option
-	 */
-	@Option(defaultValue = "1.0", 
-			description = "<value>  The value of the step size in nm (default = 1.0)")
-	/**
-	 * This operation produces the required command line option '--stepSize' which 
-	 * takes a single string value and is defined by the previous Option annotation
-	 * 
-	 * @return The value of the step size
-	 */
-	String getStepSize();
 
 	/**
 	 * This Option annotation corresponds to the optional '--material' option

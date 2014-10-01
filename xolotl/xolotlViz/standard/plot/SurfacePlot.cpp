@@ -104,7 +104,7 @@ void SurfacePlot::render(std::string fileName) {
     // Set up a plot for the data set
     eavlRenderer *plot;
     plot = new eavlPseudocolorRenderer(data, NULL,
-                                       "temperature",
+                                       "orange",
                                        false,
                                        data->GetCellSet(0)->GetName(),
                                        plotDataProvider->getDataName());

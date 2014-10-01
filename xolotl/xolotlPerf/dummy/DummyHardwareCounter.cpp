@@ -1,10 +1,13 @@
 #include "DummyHardwareCounter.h"
 
-namespace xolotlPerf
-{
+using namespace xolotlPerf;
 
-IHardwareCounter::ValType DummyHardwareCounter::dummyVals;
-IHardwareCounter::SpecType DummyHardwareCounter::dummySpec;
 
-} // namespace xolotlPerf
+std::vector<double> DummyHardwareCounter::getValues(void) const {
+    return std::vector<double>();
+}
 
+std::vector<std::string> DummyHardwareCounter::getHardwareQuantities() const {
+
+	return std::vector<std::string>();
+}

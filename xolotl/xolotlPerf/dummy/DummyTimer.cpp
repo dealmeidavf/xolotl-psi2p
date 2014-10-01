@@ -2,23 +2,19 @@
 
 using namespace xolotlPerf;
 
-void DummyTimer::start(void) {
-    // nothing to do in this stub routine
+void DummyTimer::start() {
+
 }
 
-void DummyTimer::stop(void) {
-    // nothing to do in this stub routine
+void DummyTimer::stop() {
+
 }
 
-void DummyTimer::reset(void) {
-    // nothing to do in this stub routine
-}
-
-double DummyTimer::getValue(void) const {
+double DummyTimer::getValue() const {
 	return 0;
 }
 
-std::string DummyTimer::getUnits(void) const {
+std::string DummyTimer::getUnits() const {
 	return "";
 }
 

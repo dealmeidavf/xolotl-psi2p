@@ -41,14 +41,9 @@ protected:
 	int petscArgc;
 
 	/**
-	 * The pointer to the options that will be given to PETSc.
+	 * The pointer to the options that will be given to PETSc
 	 */
 	char **petscArgv;
-
-	/**
-	 * The value of the step size for the spatial grid.
-	 */
-	double stepSize;
 
 	/**
 	 * Use the constant temperature set of handlers?
@@ -91,9 +86,9 @@ protected:
 	double heliumFlux;
 
 	/**
-	 * Which type of performance infrastructure should we use?
+	 * Use the "standard" set of handlers for the performance infrastructure?
 	 */
-	xolotlPerf::IHandlerRegistry::RegistryType perfRegistryType;
+	bool perfStandardHandlersFlag;
 
 	/**
 	 * Use the "standard" set of handlers for the visualization infrastructure?
@@ -198,18 +193,6 @@ public:
     void setPetscArgv(char** argv) {petscArgv = argv;}
 
     /**
-     * Get the value of the step size.
-     * \see IOptions.h
-     */
-    double getStepSize() const {return stepSize;}
-
-    /**
-     * Set the value of the step size.
-     * \see IOptions.h
-     */
-    void setStepSize(double value) {stepSize = value;}
-
-    /**
      * Should we use const temperature handlers?
      * \see IOptions.h
      */
@@ -308,16 +291,17 @@ public:
     void setHeliumFlux(double flux) {heliumFlux = flux;}
 
     /**
-     * Which type of performance handlers should we use?
+     * Should we use the "standard" set of handlers for the performance?
+     * If false, use dummy (stub) handlers.
      * \see IOptions.h
      */
-    xolotlPerf::IHandlerRegistry::RegistryType getPerfHandlerType(void) const { return perfRegistryType; }
+    bool usePerfStandardHandlers() const {return perfStandardHandlersFlag;}
 
     /**
-     * Set the type of performance handlers to use.
+     * Set the perfStandardHandlersFlag.
      * \see IOptions.h
      */
-    void setPerfHandlerType(xolotlPerf::IHandlerRegistry::RegistryType rtype) { perfRegistryType = rtype; }
+    void setPerfStandardHandlers(bool flag) {perfStandardHandlersFlag = flag;}
 
     /**
      * Should we use the "standard" set of handlers for the visualization?

@@ -13,7 +13,7 @@
 #include <memory>
 #include "PSICluster.h"
 #include <PSIClusterReactionNetwork.h>
-#include "xolotlPerf/IHandlerRegistry.h"
+#include <IHandlerRegistry.h>
 #include <string>
 
 namespace xolotlCore {
@@ -28,7 +28,12 @@ namespace xolotlCore {
  * > The number of He in the cluster
  * > The number of V in the cluster
  * > The number of I in the cluster
- * > The formation energy
+ * > The He binding energy
+ * > The V binding energy
+ * > The I binding energy
+ *
+ * Where appropriate, any binding energy may be specified as "Infinity" to
+ * signify that the cluster does not undergo that type of dissociation.
  *
  * Lines of comments starting with a "#" will be ignored as will lines that do
  * not clearly provide the information above.

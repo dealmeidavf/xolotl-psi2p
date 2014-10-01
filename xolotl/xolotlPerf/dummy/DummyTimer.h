@@ -1,8 +1,8 @@
 #ifndef DUMMYTIMER_H
 #define DUMMYTIMER_H
 
-#include "xolotlPerf/ITimer.h"
-#include "xolotlCore/Identifiable.h"
+#include "ITimer.h"
+#include "Identifiable.h"
 
 using namespace std;
 
@@ -20,7 +20,7 @@ private:
 	 * The default constructor is declared as private since Timers
 	 *  must be initialized with a name.
 	 */
-    DummyTimer(void)
+    DummyTimer()
       : xolotlCore::Identifiable("unused")
     { }
 
@@ -37,34 +37,29 @@ public:
     { }
 
 	/**
-	 * Destroy the timer.
+	 * The destructor.
 	 */
-	virtual ~DummyTimer(void) { }
+	virtual ~DummyTimer() { }
 
     /**
-     * Start the timer.
+     * This operations starts the ITimer.
      */
-	virtual void start(void);
+	virtual void start();
 
     /**
-     * Stop the timer.
+     * This operation stops the ITimer.
      */
-	virtual void stop(void);
+	virtual void stop();
 
     /**
-     * Reset the timer's value.
+     * This operation returns the value of the DummyTimer.
      */
-    virtual void reset(void);
-
-    /**
-     * Obtain the timer's value.
-     */
-    virtual ITimer::ValType getValue(void) const;
+    virtual double getValue() const;
 
 	/**
-	 * Obtain a string describing the units of the timer's value.
+	 * This operation returns the units of the GPTLTimer.
 	 */
-    virtual std::string getUnits(void) const;
+    virtual std::string getUnits() const;
 
 };  //end class DummyTimer
 

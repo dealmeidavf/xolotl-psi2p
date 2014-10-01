@@ -7,4 +7,3 @@ perfHandler=std
 maxHeFluence=10
 heFlux=1.5
 material=W100
-stepSize=2.0

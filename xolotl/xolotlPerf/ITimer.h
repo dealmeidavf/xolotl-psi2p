@@ -1,9 +1,7 @@
 #ifndef ITIMER_H
 #define ITIMER_H
 
-#include "mpi.h"
 #include <string>
-#include <float.h>
 #include "../xolotlCore/IIdentifiable.h"
 
 using namespace std;
@@ -17,62 +15,32 @@ namespace xolotlPerf {
 class ITimer : public virtual xolotlCore::IIdentifiable {
 
 public:
-    
-    /**
-     * The type of a timer value.
-     */
-    typedef double ValType;
-
-
-    /**
-     * The MPI type to use when transferring a ValType.
-     */
-    static constexpr MPI_Datatype MPIValType = MPI_DOUBLE;
-
-
-    /**
-     * The minimum value possible.
-     */
-    static constexpr ValType MinValue = 0.0;
-
-
-    /**
-     * The maximum value possible.
-     */
-    static constexpr ValType MaxValue = DBL_MAX;
-
 
 	/**
-	 * Destroy the timer.
+	 * The destructor
 	 */
-	virtual ~ITimer(void) { }
+	virtual ~ITimer() { }
 
 
     /**
-     * Start the timer.
+     * This operations starts the ITimer.
      */
-    virtual void start(void) = 0;
+    virtual void start() = 0;
 
     /**
-     * Stop the timer.
+     * This operation stops the ITimer.
      */
-    virtual void stop(void) = 0;
+    virtual void stop() = 0;
 
     /**
-     * Access the timer's value.  (Only valid if timer is not running.)
+     * This operation returns the value of the ITimer.
      */
-    virtual ValType getValue(void) const = 0;
-
-
-    /**
-     * Reset the timer's value.  Only valid if timer is not running.
-     */
-    virtual void reset(void) = 0;
+    virtual double getValue() const = 0;
 
     /**
-     * Obtain a string describing the units of the timer's value.
+     * This operation returns the units of the ITimer.
      */
-    virtual std::string getUnits(void) const = 0;
+    virtual std::string getUnits() const = 0;
 
 };
 //end class ITimer

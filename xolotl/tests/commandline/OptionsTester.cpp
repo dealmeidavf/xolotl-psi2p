@@ -40,6 +40,7 @@ BOOST_AUTO_TEST_CASE(noOptions)
     BOOST_REQUIRE_EQUAL(opts.getExitCode(), EXIT_FAILURE);
 }
 
+
 BOOST_AUTO_TEST_CASE(badParamFileName)
 {
     xolotlCore::Options opts;
@@ -124,9 +125,6 @@ BOOST_AUTO_TEST_CASE(goodParamFile)
     // Check the network filename
     BOOST_REQUIRE_EQUAL(opts.getNetworkFilename(), "tungsten.txt");
 
-    // Check the step size option
-    BOOST_REQUIRE_EQUAL(opts.getStepSize(), 2.0);
-
     // Check the temperature
     BOOST_REQUIRE_EQUAL(opts.useConstTemperatureHandlers(), true);
     BOOST_REQUIRE_EQUAL(opts.getConstTemperature(), 900.0);
@@ -140,7 +138,7 @@ BOOST_AUTO_TEST_CASE(goodParamFile)
     BOOST_REQUIRE_EQUAL(opts.getHeliumFlux(), 1.5);
 
     // Check the performance handler
-    BOOST_REQUIRE_EQUAL(opts.getPerfHandlerType(), xolotlPerf::IHandlerRegistry::std);
+    BOOST_REQUIRE_EQUAL(opts.usePerfStandardHandlers(), true);
 
     // Check the performance handler
     BOOST_REQUIRE_EQUAL(opts.useVizStandardHandlers(), true);
@@ -239,7 +237,7 @@ BOOST_AUTO_TEST_CASE(goodParamFileWithTempFile)
     BOOST_REQUIRE_EQUAL(opts.getHeliumFlux(), 1.5);
 
     // Check the performance handler
-    BOOST_REQUIRE_EQUAL(opts.getPerfHandlerType(), xolotlPerf::IHandlerRegistry::std);
+    BOOST_REQUIRE_EQUAL(opts.usePerfStandardHandlers(), true);
 
     // Check the performance handler
     BOOST_REQUIRE_EQUAL(opts.useVizStandardHandlers(), true);
@@ -253,96 +251,6 @@ BOOST_AUTO_TEST_CASE(goodParamFileWithTempFile)
 
     std::string tempFile = "temperatureFile.dat";
     std::remove(tempFile.c_str());
-}
-
-BOOST_AUTO_TEST_CASE(papiPerfHandler)
-{
-    xolotlCore::Options opts;
-
-	string sourceDir(XolotlSourceDirectory);
-	string pathToFile("/tests/testfiles/param_good_perf_papi.txt");
-	string filename = sourceDir + pathToFile;
-    const char* fname = filename.c_str();
-
-    // Build a command line with a parameter file containing good options
-    int fargc = 2;
-    char* args[3];
-    args[0] = const_cast<char*>("./xolotl");
-    args[1] = const_cast<char*>(fname);
-    args[2] = NULL;
-    char** fargv = args;
-
-    // Attempt to read the parameter file
-    fargc -= 1;
-    fargv += 1;
-    opts.readParams( fargc, fargv );
-
-    // Xolotl should run with good parameters
-    BOOST_REQUIRE_EQUAL(opts.shouldRun(), true);
-    BOOST_REQUIRE_EQUAL(opts.getExitCode(), EXIT_SUCCESS);
-
-    // Check the performance handler
-    BOOST_REQUIRE_EQUAL(opts.getPerfHandlerType(), xolotlPerf::IHandlerRegistry::papi);
-}
-
-BOOST_AUTO_TEST_CASE(osPerfHandler)
-{
-    xolotlCore::Options opts;
-
-	string sourceDir(XolotlSourceDirectory);
-	string pathToFile("/tests/testfiles/param_good_perf_os.txt");
-	string filename = sourceDir + pathToFile;
-    const char* fname = filename.c_str();
-
-    // Build a command line with a parameter file containing good options
-    int fargc = 2;
-    char* args[3];
-    args[0] = const_cast<char*>("./xolotl");
-    args[1] = const_cast<char*>(fname);
-    args[2] = NULL;
-    char** fargv = args;
-
-    // Attempt to read the parameter file
-    fargc -= 1;
-    fargv += 1;
-    opts.readParams( fargc, fargv );
-
-    // Xolotl should run with good parameters
-    BOOST_REQUIRE_EQUAL(opts.shouldRun(), true);
-    BOOST_REQUIRE_EQUAL(opts.getExitCode(), EXIT_SUCCESS);
-
-    // Check the performance handler
-    BOOST_REQUIRE_EQUAL(opts.getPerfHandlerType(), xolotlPerf::IHandlerRegistry::os);
-}
-
-BOOST_AUTO_TEST_CASE(dummyPerfHandler)
-{
-    xolotlCore::Options opts;
-
-	string sourceDir(XolotlSourceDirectory);
-	string pathToFile("/tests/testfiles/param_good_perf_dummy.txt");
-	string filename = sourceDir + pathToFile;
-    const char* fname = filename.c_str();
-
-    // Build a command line with a parameter file containing good options
-    int fargc = 2;
-    char* args[3];
-    args[0] = const_cast<char*>("./xolotl");
-    args[1] = const_cast<char*>(fname);
-    args[2] = NULL;
-    char** fargv = args;
-
-    // Attempt to read the parameter file
-    fargc -= 1;
-    fargv += 1;
-    opts.readParams( fargc, fargv );
-
-    // Xolotl should run with good parameters
-    BOOST_REQUIRE_EQUAL(opts.shouldRun(), true);
-    BOOST_REQUIRE_EQUAL(opts.getExitCode(), EXIT_SUCCESS);
-
-    // Check the performance handler
-    BOOST_REQUIRE_EQUAL(opts.getPerfHandlerType(), xolotlPerf::IHandlerRegistry::dummy);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

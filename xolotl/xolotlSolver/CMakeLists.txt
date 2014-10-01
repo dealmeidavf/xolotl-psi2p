@@ -14,7 +14,6 @@ file(GLOB HEADERS *.h flux/*.h temperature/*.h)
 file(GLOB SRC *.cpp flux/*.cpp temperature/*.cpp)
 
 #Include headers so that the solvers can be built
-include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/xolotlSolver)
 include_directories(${CMAKE_SOURCE_DIR}/xolotlSolver/flux)
 include_directories(${CMAKE_SOURCE_DIR}/xolotlSolver/temperature)
@@ -23,6 +22,7 @@ include_directories(${CMAKE_SOURCE_DIR}/xolotlCore/commandline)
 include_directories(${CMAKE_SOURCE_DIR}/xolotlCore/io)
 include_directories(${CMAKE_SOURCE_DIR}/xolotlCore/reactants)
 include_directories(${CMAKE_SOURCE_DIR}/xolotlCore/reactants/psiclusters)
+include_directories(${CMAKE_SOURCE_DIR}/xolotlPerf)
 include_directories(${CMAKE_SOURCE_DIR}/xolotlViz)
 include_directories(${CMAKE_SOURCE_DIR}/xolotlViz/dataprovider)
 

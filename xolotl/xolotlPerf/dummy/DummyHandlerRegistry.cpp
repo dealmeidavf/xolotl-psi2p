@@ -27,33 +27,24 @@ DummyHandlerRegistry::getEventCounter( std::string name )
 // counter data it collects.
 std::shared_ptr<IHardwareCounter>
 DummyHandlerRegistry::getHardwareCounter( std::string name, 
-                                        const IHardwareCounter::SpecType& ctrSpec )
+                                        std::vector<HardwareQuantities> hwq )
 {
     // TODO is there a need for us to retain access to this Timer?
     // TODO do we need to check whether client has already created
     // an object with this name and return that object?
-    return std::make_shared<DummyHardwareCounter>( name, ctrSpec );
+    return std::make_shared<DummyHardwareCounter>( name, hwq );
 }
 
-void 
-DummyHandlerRegistry::collectStatistics( PerfObjStatsMap<ITimer::ValType>& timerStats,
-                    PerfObjStatsMap<IEventCounter::ValType>& counterStats,
-                    PerfObjStatsMap<IHardwareCounter::CounterType>& hwCounterStats )
+// Output any collected performance data to the given output stream.
+void DummyHandlerRegistry::dump( std::ostream& /* os */ ) const
 {
     // do nothing
 }
 
-
-void 
-DummyHandlerRegistry::reportStatistics( std::ostream& os, 
-                    const PerfObjStatsMap<ITimer::ValType>& timerStats,
-                    const PerfObjStatsMap<IEventCounter::ValType>& counterStats,
-                    const PerfObjStatsMap<IHardwareCounter::CounterType>& hwCounterStats ) const
+void DummyHandlerRegistry::dump( int rank) const
 {
     // do nothing
 }
 
-
-
-};  // namespace xolotlPerf
+};  // end namespace xolotlPerf
 
