@@ -34,7 +34,7 @@ static inline double convertStrToDouble(const std::string& inString) {
 			strtod(inString.c_str(), NULL);
 }
 
-std::shared_ptr<PSICluster> PSIClusterNetworkLoader::createCluster(int numHe,
+std::shared_ptr<PSICluster> PSIClusterNetworkLoader::createPSICluster(int numHe,
 		int numV, int numI) {
 	// Local Declarations
 	std::shared_ptr<PSICluster> cluster;
@@ -45,8 +45,6 @@ std::shared_ptr<PSICluster> PSIClusterNetworkLoader::createCluster(int numHe,
 	if (numHe > 0 && numV > 0) {
 		// Create a new HeVCluster
 		cluster = std::make_shared<HeVCluster>(numHe, numV, handlerRegistry);
-
-		clusters.push_back(cluster);
 	}
 	else if (numHe > 0 && numI > 0) {
 		throw std::string("HeliumInterstitialCluster is not yet implemented.");
@@ -55,43 +53,39 @@ std::shared_ptr<PSICluster> PSIClusterNetworkLoader::createCluster(int numHe,
 	else if (numHe > 0) {
 		// Create a new HeCluster
 		cluster = std::make_shared<HeCluster>(numHe, handlerRegistry);
-
-		clusters.push_back(cluster);
 	}
 	else if (numV > 0) {
 		// Create a new VCluster
 		cluster = std::make_shared<VCluster>(numV, handlerRegistry);
-
-		clusters.push_back(cluster);
 	}
 	else if (numI > 0) {
 		// Create a new ICluster
 		cluster = std::make_shared<InterstitialCluster>(numI, handlerRegistry);
-
-		// Add it to the ICluster list
-		clusters.push_back(cluster);
 	}
 
 	return cluster;
 }
 
-PSIClusterNetworkLoader::PSIClusterNetworkLoader(
-		const std::shared_ptr<std::istream> stream,
-		std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
-	handlerRegistry(registry) {
-	setInputstream(stream);
+PSIClusterNetworkLoader::PSIClusterNetworkLoader(std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) {
+	networkStream = nullptr;
+	handlerRegistry = registry;
+	fileName = "";
+	dummyReactions = false;
 
 	return;
 }
 
-void PSIClusterNetworkLoader::setInputstream(
-		const std::shared_ptr<std::istream> stream) {
+PSIClusterNetworkLoader::PSIClusterNetworkLoader(const std::shared_ptr<std::istream> stream,
+		std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) {
 	networkStream = stream;
+	handlerRegistry = registry;
+	fileName = "";
+	dummyReactions = false;
 
 	return;
 }
 
-std::shared_ptr<PSIClusterReactionNetwork> PSIClusterNetworkLoader::load() {
+std::shared_ptr<IReactionNetwork> PSIClusterNetworkLoader::load() {
 	// Local Declarations
 	TokenizedLineReader<std::string> reader;
 	std::vector<std::string> loadedLine;
@@ -123,7 +117,7 @@ std::shared_ptr<PSIClusterReactionNetwork> PSIClusterNetworkLoader::load() {
 				numV = std::stoi(loadedLine[1]);
 				numI = std::stoi(loadedLine[2]);
 				// Create the cluster
-				auto nextCluster = createCluster(numHe, numV, numI);
+				auto nextCluster = createPSICluster(numHe, numV, numI);
 				// Load the energies
 				formationEnergy = convertStrToDouble(loadedLine[3]);
 				migrationEnergy = convertStrToDouble(loadedLine[4]);
