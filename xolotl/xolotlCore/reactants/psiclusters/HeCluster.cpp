@@ -8,20 +8,22 @@ using namespace xolotlCore;
 
 HeCluster::HeCluster(int nHe,
 		std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
-		PSICluster(nHe, registry) {
+		PSICluster(registry) {
+	// Set the size
+	size = nHe;
 	// Update the composition map
-	compositionMap["He"] = size;
+	compositionMap[heType] = size;
 
 	// Set the reactant name appropriately
 	std::stringstream nameStream;
 	nameStream << "He_" << size;
 	name = nameStream.str();
 	// Set the typename appropriately
-	typeName = "He";
+	typeName = heType;
 
 	// Compute the reaction radius
 	double FourPi = 4.0 * xolotlCore::pi;
-	double aCubed = pow(xolotlCore::latticeConstant, 3);
+	double aCubed = pow(xolotlCore::tungstenLatticeConstant, 3);
 	double termOne = pow((3.0 / FourPi) * (1.0 / 10.0) * aCubed * size,
 			(1.0 / 3.0));
 	double termTwo = pow((3.0 / FourPi) * (1.0 / 10.0) * aCubed, (1.0 / 3.0));
@@ -30,13 +32,7 @@ HeCluster::HeCluster(int nHe,
 	return;
 }
 
-std::shared_ptr<Reactant> HeCluster::clone() {
-	std::shared_ptr<Reactant> reactant(new HeCluster(*this));
-
-	return reactant;
-}
-
-void HeCluster::combineClusters(std::vector<Reactant *> & clusters,
+void HeCluster::combineClusters(std::vector<IReactant *> & clusters,
 		const std::string& productName) {
 	// Initial declarations
 	std::map<std::string, int> secondComposition;
