@@ -8,7 +8,7 @@ using namespace xolotlCore;
 
 HeVCluster::HeVCluster(int numHe, int numV,
 		std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
-		PSICluster(1, registry), numHe(numHe), numV(numV) {
+		PSICluster(registry), numHe(numHe), numV(numV) {
 	// Set the cluster size as the sum of
 	// the number of Helium and Vacancies
 	size = numHe + numV;
@@ -22,21 +22,21 @@ HeVCluster::HeVCluster(int numHe, int numV,
 	nameStream << "He_" << numHe << "V_" << numV;
 	name = nameStream.str();
 	// Set the typename appropriately
-	typeName = "HeV";
+	typeName = heVType;
 
 	// Compute the reaction radius
-	reactionRadius = (sqrt(3.0) / 4.0) * xolotlCore::latticeConstant
+	reactionRadius = (sqrt(3.0) / 4.0) * xolotlCore::tungstenLatticeConstant
 			+ pow(
-					(3.0 * pow(xolotlCore::latticeConstant, 3.0) * numV)
+					(3.0 * pow(xolotlCore::tungstenLatticeConstant, 3.0) * numV)
 							/ (8.0 * xolotlCore::pi), (1.0 / 3.0))
 			- pow(
-					(3.0 * pow(xolotlCore::latticeConstant, 3.0))
+					(3.0 * pow(xolotlCore::tungstenLatticeConstant, 3.0))
 							/ (8.0 * xolotlCore::pi), (1.0 / 3.0));
 
 	return;
 }
 
-HeVCluster::HeVCluster(const HeVCluster &other) :
+HeVCluster::HeVCluster(HeVCluster &other) :
 		PSICluster(other) {
 	numHe = other.numHe;
 	numV = other.numV;
@@ -44,13 +44,7 @@ HeVCluster::HeVCluster(const HeVCluster &other) :
 	return;
 }
 
-std::shared_ptr<Reactant> HeVCluster::clone() {
-	std::shared_ptr<Reactant> reactant(new HeVCluster(*this));
-
-	return reactant;
-}
-
-void HeVCluster::replaceInCompound(std::vector<Reactant *> & reactants,
+void HeVCluster::replaceInCompound(std::vector<IReactant *> & reactants,
 		const std::string& oldComponentName) {
 	// Local Declarations
 	std::map<std::string, int> myComp = getComposition(),
@@ -90,7 +84,7 @@ void HeVCluster::replaceInCompound(std::vector<Reactant *> & reactants,
 	return;
 }
 
-void HeVCluster::combineClusters(std::vector<Reactant *> & clusters,
+void HeVCluster::combineClusters(std::vector<IReactant *> & clusters,
 		const std::string& productName) {
 	// Initial declarations
 	std::map<std::string, int> myComposition = getComposition(),
@@ -273,7 +267,7 @@ void HeVCluster::createReactionConnectivity() {
 	// The single Vacancy cluster is already set
 	if (singleVReactant) {
 		// Create a container for it
-		std::vector<Reactant *> singleVInVector;
+		std::vector<IReactant *> singleVInVector;
 		singleVInVector.push_back(singleVReactant);
 		// Call the combination function even though there is only one cluster
 		// because it handles all of the work to properly connect the three
