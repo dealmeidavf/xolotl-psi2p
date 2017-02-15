@@ -1,3 +1,10 @@
+
+vfda: Wed Feb 15 15:53:12 EST 2017
+This is an experimental version of a two-phase cluster dynamics model for
+either helium irradiation of tungsten in confined fusion applications or 
+fission gas bubble generation in oxide nuclear fuel. 
+The current development is aimed at He irradiation.
+
 README.txt for Xolotl Plasma Surface Interactions Simulator, copied directly from
 https://sourceforge.net/p/xolotl-psi/wiki/Build%20Configuration/
 
