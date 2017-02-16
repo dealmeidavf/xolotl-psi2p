@@ -126,11 +126,13 @@ To build Xolotl you now need to specify the PETSC_ARCH variable when running cma
 HDF5
 -----
 
+Note: make sure the MPICH3 C compiler and MPI library is working on your system before going forward. Run a simple helloworld.c test (C code).
+
 [HDF5](http://www.hdfgroup.org/HDF5/) is required for I/O in Xolotl and its dependencies. Use the following commands:
 
 >./configure --prefix=/opt/hdf5 --enable-parallel 
 make
-make check
+make check    (this may take a while on your laptop)
 make install
 make check-install
 
