@@ -1,11 +1,3 @@
-
-vfda: Wed Feb 15 15:53:12 EST 2017
-This is an experimental version of a two-phase cluster dynamics model for
-either helium irradiation of tungsten in confined fusion applications or 
-fission gas bubble generation in oxide nuclear fuel. 
-The current development is aimed at He irradiation.
-
-
 README.txt for Xolotl Plasma Surface Interactions Simulator, copied directly from
 https://sourceforge.net/p/xolotl-psi/wiki/Build%20Configuration/
 
@@ -126,13 +118,11 @@ To build Xolotl you now need to specify the PETSC_ARCH variable when running cma
 HDF5
 -----
 
-Note: make sure the MPICH3 C compiler and MPI library is working on your system before going forward. Run a simple helloworld.c test (C code).
-
 [HDF5](http://www.hdfgroup.org/HDF5/) is required for I/O in Xolotl and its dependencies. Use the following commands:
 
 >./configure --prefix=/opt/hdf5 --enable-parallel 
 make
-make check    (this may take a while on your laptop)
+make check
 make install
 make check-install
 
@@ -283,4 +273,3 @@ Getting GCC 4.7+
 If your machine is Ubuntu 12.10 you're already using GNU C++ 4.7 and above.
 
 [Here](http://www.swiftsoftwaregroup.com/upgrade-gcc-4-7-ubuntu-12-04/) is a link that will tell you how to upgrade GCC if you're on Ubuntu 12.04.
-
