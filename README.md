@@ -5,9 +5,8 @@ either helium irradiation of tungsten in confined fusion applications or
 fission gas bubble generation in oxide nuclear fuel. 
 The current development is aimed at He irradiation.
 
-
-README.txt for Xolotl Plasma Surface Interactions Simulator, copied directly from
-https://sourceforge.net/p/xolotl-psi/wiki/Build%20Configuration/
+Original Xolotl Plasma Surface Interactions Simulator at
+https://sourceforge.net/p/xolotl-psi/
 
 This page provides instructions on how to build Xolotl and its dependencies. All the commands were written for a bash shell, if you are using another type of shell you will have to modify the commands accordingly. CMake is required to build Xolotl, although instructions for it are not included below. We recommend that you download CMake using the package manager on your system. On Red Hat-based systems, this is as simple as running "yum install cmake" or "dnf install cmake" as root.
 Xolotl also requires GCC 4.7.2 or greater (if you prefer to use other compilers, Xolotl has been tested with Intel compilers higher than 14, and PGI linking to a GCC with a version higher than 4.7.2). Instructions to upgrade your GCC are given at the bottom of this page.
@@ -20,24 +19,32 @@ Building Xolotl
 
 First things first, let's checkout the GitHub repository with 
 
-> git clone https://github.com/val-github/xolotl-fgs.git /path/xolotl-fgs
+> git clone https://github.com/val-github/xolotl-psi2p.git /path/xolotl-psi2p
 
 Now, assuming you have all of the dependencies for Xolotl built and a good C++11 compiler (GCC 4.7.2 or greater), "Xolotl itself is quite easy to build" (vfda: maybe). If you do not have all of the dependencies, check out the next section.
 
-Create a directory in which you want to build Xolotl (for instance /path/xolotl-build) and change into it. It can be any directory except for the source directory (which is /path/xolotl-fgs/). From inside the build directory run the following commands:
+Create a directory in which you want to build Xolotl (for instance /path/xolotl-build) and change into it. It can be any directory except for the source directory (which is /path/xolotl-psi2p/). From inside the build directory run the following commands:
 
 >    export CXX=/mpich-install/bin/mpicxx 
+
 >    export CC =/mpich-install/bin/mpicc
+
 >    export PETSC_DIR=/petsc-install 
->    cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
+
+>    cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-psi2p/src/
+
 >    make
 
 on my system I use:
 
 >    export CXX=/usr/local/mpich/bin/mpicxx 
+
 >    export CC =/usr/local/mpich/bin/mpicc
+
 >    export PETSC_DIR=/usr/local/petsc_mpich
->    cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
+
+>    cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-psi2p/src/
+
 >    make
 
 with the path to your MPI compilers (here mpicc and mpicxx) in CXX and CC, and the path to an installed PETSc version in PETSC_DIR (multiple PETSc versions can coexist on the same file-system). The CC compiler is used to compile PETSc tests during configuration to "double/triple/quadruple" test your installation of PETSc!!
