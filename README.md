@@ -26,17 +26,25 @@ Now, assuming you have all of the dependencies for Xolotl built and a good C++11
 
 Create a directory in which you want to build Xolotl (for instance /path/xolotl-build) and change into it. It can be any directory except for the source directory (which is /path/xolotl-fgs/). From inside the build directory run the following commands:
 
->CXX=/mpich-install/bin/mpicxx PETSC_DIR=/petsc-install HDF5_ROOT=/hdf5-install cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
-make
+>    export CXX=/mpich-install/bin/mpicxx 
+>    export CC =/mpich-install/bin/mpicc
+>    export PETSC_DIR=/petsc-install 
+>    cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
+>    make
 
-with the path to your MPI compiler (here mpicxx) in CXX and the path to an installed PETSc version in PETSC_DIR (multiple PETSc versions can coexist on the same file-system).
-To be on the safe side point to your parallel installation of HDF5 and do not rely on cmake finding it on your system.
+on my system I use:
+
+>    export CXX=/usr/local/mpich/bin/mpicxx 
+>    export CC =/usr/local/mpich/bin/mpicc
+>    export PETSC_DIR=/usr/local/petsc_mpich
+>    cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
+>    make
+
+with the path to your MPI compilers (here mpicc and mpicxx) in CXX and CC, and the path to an installed PETSc version in PETSC_DIR (multiple PETSc versions can coexist on the same file-system). The CC compiler is used to compile PETSc tests during configuration to "double/triple/quadruple" test your installation of PETSc!!
 
 You can also run make in parallel (make -jN, where N is the number of processes) to build Xolotl faster. This is recommended if you have a big machine.
 
-If CMake fails to find HDF5, add the path to your HDF5 installation directory in the CMake command:
-
->CXX=/mpich-install/bin/mpicxx PETSC_DIR=/petsc-install HDF5_ROOT=/hdf5-install cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
+If CMake fails to find HDF5 you are better off trying to fix the problem than trying to point CMake to the HDF5 install directory. Make sure the parallel HDF5 install directory is on your path and the libraries can be found as described below in the HDF5 section.
 
 Never use the -DCMAKE_CXX_COMPILER=<C++ compiler> option instead of CXX=<C++ compiler> environment variable. It causes CMake to ignore all of your other options (such as -DBoost_ROOT if you have a special build of Boost).
 
