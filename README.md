@@ -1,5 +1,5 @@
 
-vfda: Wed Feb 15 15:53:12 EST 2017
+vfda: Wed Feb 15 15:53:12 EST 2017 dealmeidav@ornl.gov
 This is an experimental version of a two-phase cluster dynamics model for
 either helium irradiation of tungsten in confined fusion applications or 
 fission gas bubble generation in oxide nuclear fuel. 
@@ -18,24 +18,25 @@ All of the commands are executed in bash unless stated otherwise. You should rep
 Building Xolotl
 =====
 
-First things first, let's checkout the SVN repository with 
+First things first, let's checkout the GitHub repository with 
 
-> svn co https://svn.code.sf.net/p/xolotl-psi/code/trunk/xolotl/ /home/user/xolotl-source
+> git clone https://github.com/val-github/xolotl-fgs.git /path/xolotl-fgs
 
-Now, assuming you have all of the dependencies for Xolotl built and a good C++11 compiler (GCC 4.7.2 or greater), Xolotl itself is quite easy to build. If you do not have all of the dependencies, check out the next section.
+Now, assuming you have all of the dependencies for Xolotl built and a good C++11 compiler (GCC 4.7.2 or greater), "Xolotl itself is quite easy to build" (vfda: maybe). If you do not have all of the dependencies, check out the next section.
 
-Create a directory in which you want to build Xolotl (for instance /home/user/xolotl-build) and change into it. It can be any directory except for the source directory (which is /home/user/xolotl-source/). From inside the build directory run the following commands:
+Create a directory in which you want to build Xolotl (for instance /path/xolotl-build) and change into it. It can be any directory except for the source directory (which is /path/xolotl-fgs/). From inside the build directory run the following commands:
 
->CXX=/opt/mpich/bin/mpicxx PETSC_DIR=/opt/petsc-install cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-source/
+>CXX=/mpich-install/bin/mpicxx PETSC_DIR=/petsc-install HDF5_ROOT=/hdf5-install cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
 make
 
 with the path to your MPI compiler (here mpicxx) in CXX and the path to an installed PETSc version in PETSC_DIR (multiple PETSc versions can coexist on the same file-system).
+To be on the safe side point to your parallel installation of HDF5 and do not rely on cmake finding it on your system.
 
 You can also run make in parallel (make -jN, where N is the number of processes) to build Xolotl faster. This is recommended if you have a big machine.
 
 If CMake fails to find HDF5, add the path to your HDF5 installation directory in the CMake command:
 
->CXX=/opt/mpich/bin/mpicxx PETSC_DIR=/opt/petsc-install HDF5_ROOT=/opt/hdf5 cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-source/
+>CXX=/mpich-install/bin/mpicxx PETSC_DIR=/petsc-install HDF5_ROOT=/hdf5-install cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-fgs/src/
 
 Never use the -DCMAKE_CXX_COMPILER=<C++ compiler> option instead of CXX=<C++ compiler> environment variable. It causes CMake to ignore all of your other options (such as -DBoost_ROOT if you have a special build of Boost).
 
@@ -64,7 +65,6 @@ You can run Xolotl tests with
 If you want to only run a specific one, run the corresponding executable that is created in your build folder. For instance (from your build directory)
 
 >./tests/reactants/PSIClusterTester
-
 
 MPICH 3
 -----
@@ -95,6 +95,13 @@ git clone https://bitbucket.org/petsc/petsc petsc
 Enter the petsc directory and build it using the following commands (hint: after the configure step, PETSc will print you what to execute):
 
 >./configure PETSC_DIR=$PWD --prefix=/opt/petsc-install --with-cc=mpicc --with-cxx=mpicxx --with-fc=mpif77 --with-debugging=no  --with-shared-libraries
+
+If you are using python3 you may be asked to use python2 instead:
+
+python2 './configure' 'PETSC_DIR=/*pathto*/petsc-3.7.5' '--prefix=/usr/local/packages/petsc-3.7.5_mpich-3.2_gcc-4.9.3' '--with-cc=mpicc' '--with-cxx=mpicxx' '--with-fc=mpif77' '--with-debugging=no'  '--with-shared-libraries' '--download-fblaslapack'
+
+this version assumes that blas and lapack are to be compiled.
+
 make PETSC_DIR=/opt/petsc PETSC_ARCH=arch-linux2-c-opt all
 make PETSC_DIR=/opt/petsc PETSC_ARCH=arch-linux2-c-opt install
 make PETSC_DIR=/opt/petsc-install test
