@@ -8,15 +8,16 @@
 
 using namespace std;
 
-namespace xolotlPerf {
-
+namespace xolotlPerf 
+{
 /**
  * Realizations of this interface are responsible for the collection
  * of performance timing statistics.
  */
-class ITimer: public virtual xolotlCore::IIdentifiable {
+class ITimer: public virtual xolotlCore::IIdentifiable 
+{
 
-public:
+ public:
 
 	/**
 	 * The type of a timer value.

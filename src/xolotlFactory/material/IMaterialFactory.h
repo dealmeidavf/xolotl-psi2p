@@ -14,8 +14,9 @@ namespace xolotlFactory {
  * Realizations of this interface are responsible for handling the flux and the advection.
  * they are both dependent on the type of material under study.
  */
-class IMaterialFactory {
-public:
+class IMaterialFactory 
+{
+ public:
 
 	/**
 	 * The destructor

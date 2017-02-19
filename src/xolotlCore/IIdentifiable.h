@@ -11,7 +11,7 @@ namespace xolotlCore {
  */
 class IIdentifiable
 {
-public:
+ public:
 
     /**
      * Obtain the object's given name.

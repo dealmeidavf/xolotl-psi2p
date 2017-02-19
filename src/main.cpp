@@ -25,73 +25,89 @@ using namespace std;
 using std::shared_ptr;
 namespace xperf = xolotlPerf;
 
-//! This operation prints the start message
-void printStartMessage() {
-	std::cout << "Starting Xolotl Plasma-Surface Interactions Simulator"
-			<< std::endl;
-	// TODO! Print copyright message
-	// Print date and time
-	std::time_t currentTime = std::time(NULL);
-	std::cout << std::asctime(std::localtime(&currentTime)); // << std::endl;
+//*------ Global helper functions -----------------------------------------------*
+
+//................................................................................
+void 
+printStartMessage() 
+{
+ std::cout << "Starting Xolotl Plasma-Surface Interactions Simulator" << std::endl;
+ // Print date and time
+ std::time_t currentTime = std::time(NULL);
+ std::cout << std::asctime(std::localtime(&currentTime)); // << std::endl;
 }
 
-std::shared_ptr<xolotlFactory::IMaterialFactory> initMaterial(
-		Options &options) {
-	// Create the material factory
-	auto materialFactory =
-			xolotlFactory::IMaterialFactory::createMaterialFactory(
-					options.getMaterial(), options.getDimensionNumber());
+//................................................................................
+std::shared_ptr<xolotlFactory::IMaterialFactory> 
+initMaterial( Options &options ) 
+{
+// Create the material factory
+ auto materialFactory = xolotlFactory::IMaterialFactory::createMaterialFactory(
+                        options.getMaterial(), options.getDimensionNumber() );
 
-	// Initialize it with the options
-	materialFactory->initializeMaterial(options);
+// Initialize it with the options
+ materialFactory->initializeMaterial( options );
 
-	return materialFactory;
+ return materialFactory;
 }
 
-bool initTemp(Options &options) {
-
-	bool tempInitOK = xolotlFactory::initializeTempHandler(options);
-	if (!tempInitOK) {
-		std::cerr << "Unable to initialize requested temperature.  Aborting"
-				<< std::endl;
-		return EXIT_FAILURE;
-	} else
-		return tempInitOK;
+//................................................................................
+bool 
+initTemp(Options &options) 
+{
+ bool tempInitOK = xolotlFactory::initializeTempHandler(options);
+ if (!tempInitOK) 
+ {
+  std::cerr << "Unable to initialize requested temperature. Aborting" 
+            << std::endl;
+  return EXIT_FAILURE;
+ } 
+ else
+ {
+  return tempInitOK;
+ }
 }
 
-bool initViz(bool opts) {
-
-	bool vizInitOK = xolotlFactory::initializeVizHandler(opts);
-	if (!vizInitOK) {
-		std::cerr
-				<< "Unable to initialize requested visualization infrastructure. "
-				<< "Aborting" << std::endl;
-		return EXIT_FAILURE;
-	} else
-		return vizInitOK;
+//................................................................................
+bool 
+initViz( bool opts ) 
+{
+ bool vizInitOK = xolotlFactory::initializeVizHandler(opts);
+ if (!vizInitOK) 
+ {
+  std::cerr << "Unable to initialize requested visualization infrastructure. Aborting"
+            << std::endl;
+  return EXIT_FAILURE;
+ } 
+ else
+ {
+  return vizInitOK;
+ }
 }
 
-std::shared_ptr<xolotlSolver::PetscSolver> setUpSolver(
-		std::shared_ptr<xolotlPerf::IHandlerRegistry> handlerRegistry,
-		std::shared_ptr<xolotlFactory::IMaterialFactory> material,
-		std::shared_ptr<xolotlCore::ITemperatureHandler> tempHandler,
-		std::shared_ptr<xolotlCore::IReactionNetwork> networkHandler,
-		std::shared_ptr<xolotlSolver::ISolverHandler> solvHandler,
-		Options &options) {
-	// Initialize the solver handler
-	solvHandler->initializeHandlers(material, tempHandler, networkHandler, options);
+//................................................................................
+std::shared_ptr<xolotlSolver::PetscSolver> 
+setUpSolver( std::shared_ptr<xolotlPerf::IHandlerRegistry>    handlerRegistry,
+             std::shared_ptr<xolotlFactory::IMaterialFactory> material,
+             std::shared_ptr<xolotlCore::ITemperatureHandler> tempHandler,
+             std::shared_ptr<xolotlCore::IReactionNetwork>    networkHandler,
+             std::shared_ptr<xolotlSolver::ISolverHandler>    solvHandler,
+             Options &options )  
+{
+// Initialize the solver handler
+ solvHandler->initializeHandlers(material, tempHandler, networkHandler, options);
 
-	// Setup the solver
-	auto solverInitTimer = handlerRegistry->getTimer("initSolver");
-	solverInitTimer->start();
-	std::shared_ptr<xolotlSolver::PetscSolver> solver = std::make_shared<
-			xolotlSolver::PetscSolver>(handlerRegistry);
-	solver->setCommandLineOptions(options.getPetscArgc(),
-			options.getPetscArgv());
-	solver->initialize(solvHandler);
-	solverInitTimer->stop();
+// Setup the solver
+ auto solverInitTimer = handlerRegistry->getTimer("initSolver");
+ solverInitTimer->start();
+ std::shared_ptr<xolotlSolver::PetscSolver> solver = std::make_shared<
+		xolotlSolver::PetscSolver>(handlerRegistry);
+ solver->setCommandLineOptions(options.getPetscArgc(),
+		options.getPetscArgv());
+ solver->initialize(solvHandler);
+ solverInitTimer->stop();
 
-	return solver;
+ return solver;
 }
 
 void launchPetscSolver(std::shared_ptr<xolotlSolver::PetscSolver> solver,
@@ -112,7 +128,10 @@ void launchPetscSolver(std::shared_ptr<xolotlSolver::PetscSolver> solver,
 	solverTimer->stop();
 }
 
-//! Main program
+//*------ End global helper functions -------------------------------------------*
+
+
+//******** Main Program **********************************************************
 int main(int argc, char **argv) {
 
 	// Local Declarations
@@ -234,3 +253,4 @@ int main(int argc, char **argv) {
 
 	return EXIT_SUCCESS;
 }
+//******** End Main Program ******************************************************
