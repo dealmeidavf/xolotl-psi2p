@@ -231,7 +231,7 @@ main(int argc, char** argv)
   auto solver = mainHelper::setUpSolver( handlerRegistry, material, tempHandler, 
                                          networkHandler, solvHandler, opts      );
 
-// Here is the big action:
+// ** Here is THE action **
 // Launch the PetscSolver
   mainHelper::launchPetscSolver( solver, handlerRegistry );
 

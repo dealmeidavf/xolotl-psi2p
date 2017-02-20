@@ -55,7 +55,7 @@ namespace xolotlSolver
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 // Get starting conditions from HDF5 file
-  int nx = 0, ny = 0, nz = 0;
+  int    nx = 0,   ny = 0,   nz = 0;
   double hx = 0.0, hy = 0.0, hz = 0.0;
   xolotlCore::HDF5Utils::readHeader(networkName, nx, hx, ny, hy, nz, hz);
 
@@ -151,7 +151,7 @@ namespace xolotlSolver
   PetscErrorCode ierr;
 
 // Pointer for the concentration vector
-  PetscScalar **concentrations = nullptr;
+  PetscScalar** concentrations = nullptr;
   ierr = DMDAVecGetArrayDOF(da, C, &concentrations);
   checkPetscError(ierr, "PetscSolver1DHandler::initializeConcentration: "
                         "DMDAVecGetArrayDOF failed.");
@@ -164,7 +164,8 @@ namespace xolotlSolver
 
 // Get the last time step written in the HDF5 file
   int tempTimeStep = -2;
-  bool hasConcentrations = xolotlCore::HDF5Utils::hasConcentrationGroup( networkName, tempTimeStep);
+  bool hasConcentrations = xolotlCore::HDF5Utils::hasConcentrationGroup( networkName, 
+                                                  tempTimeStep);
 
 // Get the total size of the grid for the boundary conditions
   int xSize = grid.size();
@@ -276,7 +277,7 @@ namespace xolotlSolver
 // The following pointers are set to the first position in the conc or
 // updatedConc arrays that correspond to the beginning of the data for the
 // current grid point. They are accessed just like regular arrays.
-  PetscScalar *concOffset = nullptr, *updatedConcOffset = nullptr;
+  PetscScalar* concOffset = nullptr, *updatedConcOffset = nullptr;
 
 // Degrees of freedom is the total number of clusters in the network
   const int dof = network->getDOF();
@@ -289,10 +290,10 @@ namespace xolotlSolver
   for (int xi = xs; xi < xs + xm; xi++) 
   {
 // Boundary conditions
-   if (xi <= surfacePosition || xi == xSize - 1) continue;
+   if ( xi <= surfacePosition || xi == xSize - 1 ) continue;
 
 // We are only interested in the helium near the surface
-   if (grid[xi] - grid[surfacePosition] > 2.0) continue;
+   if ( grid[xi] - grid[surfacePosition] > 2.0 ) continue;
 
 // Get the concentrations at this grid point
    concOffset = concs[xi];

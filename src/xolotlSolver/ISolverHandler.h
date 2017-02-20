@@ -52,7 +52,7 @@ namespace xolotlSolver
  * @param da The PETSc distributed array
  */
    virtual void 
-   createSolverContext(DM& da) = 0;
+   createSolverContext( DM& da ) = 0;
 
 /**
  * Initialize the concentration solution vector.
@@ -61,7 +61,7 @@ namespace xolotlSolver
  * @param C The PETSc solution vector
  */
    virtual void 
-   initializeConcentration(DM& da, Vec& C) = 0;
+   initializeConcentration( DM& da, Vec& C ) = 0;
 
 /**
  * Compute the new concentrations for the RHS function given an initial
@@ -73,7 +73,7 @@ namespace xolotlSolver
  * @param ftime The real time
  */
    virtual void 
-   updateConcentration(TS& ts, Vec& localC, Vec& F, PetscReal ftime) = 0;
+   updateConcentration( TS& ts, Vec& localC, Vec& F, PetscReal ftime ) = 0;
 
 /**
  * Compute the off-diagonal part of the Jacobian which is related to cluster's motion.
@@ -84,7 +84,7 @@ namespace xolotlSolver
  * @param ftime The real time
  */
    virtual void 
-   computeOffDiagonalJacobian( TS& ts, Vec& localC, Mat& J, PetscReal ftime) = 0;
+   computeOffDiagonalJacobian( TS& ts, Vec& localC, Mat& J, PetscReal ftime ) = 0;
 
 /**
  * Compute the diagonal part of the Jacobian which is related to cluster reactions.
@@ -95,7 +95,7 @@ namespace xolotlSolver
  * @param ftime The real time
  */
    virtual void 
-   computeDiagonalJacobian( TS& ts, Vec& localC, Mat& J, PetscReal ftime) = 0;
+   computeDiagonalJacobian( TS& ts, Vec& localC, Mat& J, PetscReal ftime ) = 0;
 
 /**
  * Get the grid in the x direction.
@@ -147,7 +147,7 @@ namespace xolotlSolver
  * @param k The index on the grid in the z direction
  */
    virtual void 
-   setSurfacePosition(int pos, int j = -1, int k = -1) = 0;
+   setSurfacePosition( int pos, int j = -1, int k = -1 ) = 0;
 
 /**
  * Get the initial vacancy concentration.
