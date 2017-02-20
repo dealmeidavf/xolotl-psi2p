@@ -4,7 +4,8 @@
 // Includes
 #include "SolverHandler.h"
 
-namespace xolotlSolver {
+namespace xolotlSolver 
+{
 
 #ifndef CHECK_PETSC_ERROR
 #define CHECK_PETSC_ERROR
@@ -14,10 +15,11 @@ namespace xolotlSolver {
  * @param errorCode The PETSc error code.
  * @param errMsg The error message in the thrown exception.
  */
-inline void checkPetscError(PetscErrorCode errorCode, const char* errorMsg) {
-	if (PetscUnlikely(errorCode))
-		throw std::string(errorMsg);
-}
+ inline void 
+ checkPetscError(PetscErrorCode errorCode, const char* errorMsg) 
+ {
+  if (PetscUnlikely(errorCode)) throw std::string(errorMsg);
+ }
 #endif
 
 /**
@@ -28,52 +30,53 @@ inline void checkPetscError(PetscErrorCode errorCode, const char* errorMsg) {
  * This class does NOT implement most of the methods that are needed by the
  * PetscSolver. Only subclasses of this class must be used by the PetscSolver.
  */
-class PetscSolverHandler: public SolverHandler {
-protected:
+ class PetscSolverHandler: public SolverHandler 
+ {
+  protected:
 
-	/**
-	 * The last temperature on the grid. In the future this will have to be an
-	 * array or map, but for now the temperature is isotropic.
-	 */
-	double lastTemperature;
+/**
+ * The last temperature on the grid. In the future this will have to be an
+ * array or map, but for now the temperature is isotropic.
+ */
+   double lastTemperature;
 
-	/**
-	 * A pointer to all of the reactants in the network. It is retrieved from the
-	 * network after it is set.
-	 */
-	std::shared_ptr<std::vector<xolotlCore::IReactant *>> allReactants;
+/**
+ * A pointer to all of the reactants in the network. It is retrieved from the
+ * network after it is set.
+ */
+   std::shared_ptr<std::vector<xolotlCore::IReactant *>> allReactants;
 
-	/**
-	 * A vector for holding the partial derivatives of one cluster. It is sized in
-	 * the createSolverContext() operation.
-	 *
-	 * The vector is used for every cluster and immediately reset to zero before
-	 * being used for the next. This allows the acquisition of the partial
-	 * derivatives to take up minimal memory and require no additional dynamic
-	 * allocations.
-	 */
-	std::vector<double> clusterPartials;
+/**
+ * A vector for holding the partial derivatives of one cluster. It is sized in
+ * the createSolverContext() operation.
+ *
+ * The vector is used for every cluster and immediately reset to zero before
+ * being used for the next. This allows the acquisition of the partial
+ * derivatives to take up minimal memory and require no additional dynamic
+ * allocations.
+ */
+   std::vector<double> clusterPartials;
 
-	/**
-	 * A vector for holding the partial derivatives for one cluster in the order
-	 * that PETSc expects. It is sized in the createSolverContext() operation.
-	 *
-	 * The vector is used for every cluster and immediately reset to zero before
-	 * being used for the next. This allows the acquisition of the partial
-	 * derivatives to take up minimal memory and require no additional dynamic
-	 * allocations.
-	 */
-	std::vector<double> reactingPartialsForCluster;
+/**
+ * A vector for holding the partial derivatives for one cluster in the order
+ * that PETSc expects. It is sized in the createSolverContext() operation.
+ *
+ * The vector is used for every cluster and immediately reset to zero before
+ * being used for the next. This allows the acquisition of the partial
+ * derivatives to take up minimal memory and require no additional dynamic
+ * allocations.
+ */
+   std::vector<double> reactingPartialsForCluster;
 
-public:
+  public:
 
-	//! The Constructor
-	PetscSolverHandler() : lastTemperature(0.0) {}
+//! The Constructor
+  PetscSolverHandler() : lastTemperature(0.0) {}
 
-	//! The Destructor
-	~PetscSolverHandler() {}
+//! The Destructor
+  ~PetscSolverHandler() {}
 
-}; //end class PetscSolverHandler
+ }; //end class PetscSolverHandler
 
 } /* end namespace xolotlSolver */
 #endif

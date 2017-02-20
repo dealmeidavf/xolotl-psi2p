@@ -8,16 +8,18 @@
 
 using namespace xolotlCore;
 
-namespace xolotlSolver {
+namespace xolotlSolver 
+{
 
 /**
  * Realizations of this interface are responsible for solving the set of
  * advection-diffusion-reaction equations that govern the evolution of
  * clusters in plasma surface interactions.
  */
-class ISolver {
+class ISolver 
+{
 
-public:
+ public:
 
 	/**
 	 * The destructor

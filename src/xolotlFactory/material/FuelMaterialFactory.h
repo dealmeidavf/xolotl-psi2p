@@ -10,55 +10,59 @@
 #include <Diffusion2DHandler.h>
 #include <Diffusion3DHandler.h>
 
-namespace xolotlFactory {
+namespace xolotlFactory 
+{
 
 /**
  * Subclass of MaterialFactory for a nuclear fuel material.
  */
-class FuelMaterialFactory : public MaterialFactory {
-private:
+ class FuelMaterialFactory : public MaterialFactory 
+ {
+  private:
 
-	/**
-	 * The default constructor is private.
-	 */
-	FuelMaterialFactory() {}
+/**
+ * The default constructor is private.
+ */
+   FuelMaterialFactory(){}
 
-public:
+  public:
 
-	/**
-	 * The constructor creates the handlers.
-	 *
-	 * @param dim The number of dimensions for the problem
-	 */
-	FuelMaterialFactory(int dim) {
-		theFluxHandler = std::make_shared<xolotlCore::FuelFitFluxHandler>();
-		theAdvectionHandler.push_back(std::make_shared<xolotlCore::DummyAdvectionHandler>());
-		theTrapMutationHandler = std::make_shared<xolotlCore::DummyTrapMutationHandler>();
+/**
+ * The constructor creates the handlers.
+ *
+ * @param dim The number of dimensions for the problem
+ */
+   FuelMaterialFactory( int dim ) 
+   {
+    theFluxHandler = std::make_shared<xolotlCore::FuelFitFluxHandler>();
 
-		// Switch on the dimension for the diffusion handler
-		switch (dim) {
-			case 1:
-				theDiffusionHandler = std::make_shared<xolotlCore::Diffusion1DHandler>();
-				break;
-			case 2:
-				theDiffusionHandler = std::make_shared<xolotlCore::Diffusion2DHandler>();
-				break;
-			case 3:
-				theDiffusionHandler = std::make_shared<xolotlCore::Diffusion3DHandler>();
-				break;
-			default:
-				// The asked dimension is not good (e.g. -1, 0, 4)
-				throw std::string("\nxolotlFactory: Bad dimension for the Fuel material factory.");
-		}
+    theAdvectionHandler.push_back( std::make_shared<xolotlCore::DummyAdvectionHandler>() );
+    theTrapMutationHandler = std::make_shared<xolotlCore::DummyTrapMutationHandler>();
 
-		return;
-	}
+// Switch on the dimension for the diffusion handler
+    switch(dim) 
+    {
+     case 1:
+      theDiffusionHandler = std::make_shared<xolotlCore::Diffusion1DHandler>();
+      break;
+     case 2:
+      theDiffusionHandler = std::make_shared<xolotlCore::Diffusion2DHandler>();
+      break;
+     case 3:
+      theDiffusionHandler = std::make_shared<xolotlCore::Diffusion3DHandler>();
+      break;
+     default:
+// The asked dimension is not good (e.g. -1, 0, 4)
+      throw std::string("\nxolotlFactory: Bad dimension for the Fuel material factory.");
+    }
+    return;
+   }
 
-	/**
-	 * The destructor
-	 */
-	~FuelMaterialFactory() {}
-};
+/**
+ * The destructor
+ */
+   ~FuelMaterialFactory(){}
+ };
 
 } // end namespace xolotlFactory
 
