@@ -37,6 +37,8 @@ Create a directory in which you want to build Xolotl (for instance /path/xolotl-
 
 >    make
 
+>    make test
+
 on my system I use:
 
 >    export CXX=/usr/local/mpich/bin/mpicxx 
@@ -48,6 +50,8 @@ on my system I use:
 >    cmake -DCMAKE_BUILD_TYPE=Release ../xolotl-psi2p/src/
 
 >    make
+
+>    make test
 
 with the path to your MPI compilers (here mpicc and mpicxx) in CXX and CC, and the path to an installed PETSc version in PETSC_DIR (multiple PETSc versions can coexist on the same file-system). The CC compiler is used to compile PETSc tests during configuration to "double/triple/quadruple" test your installation of PETSc!!
 
