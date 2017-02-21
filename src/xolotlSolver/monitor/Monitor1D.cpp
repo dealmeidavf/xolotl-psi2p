@@ -557,10 +557,11 @@ namespace xolotlSolver
    std::stringstream name;
    name << "heliumConc_" << timestep << ".dat";
    outputFile.open(name.str());
+   outputFile << time << std::endl;
   }
 
 // Loop on the full grid
-  for (PetscInt xi = surfacePos; xi < Mx; xi++) 
+  for ( PetscInt xi = surfacePos; xi < Mx; xi++ ) 
   {
 // Wait for everybody at each grid point
    MPI_Barrier(PETSC_COMM_WORLD);
@@ -582,10 +583,10 @@ namespace xolotlSolver
     {
 // Add the current concentration
      heConcLocal[ weights1D[l] ] += gridPointSolution[ indices1D[l] ]
-                                  * (grid[xi] - grid[xi - 1]);
+                                  * ( grid[xi] - grid[xi - 1] );
     }
 
-// Loop on the super clusters
+// Loop on the super clusters (vfda: what is a super cluster?)
     for (int l = 0; l < superClusters.size(); l++) 
     {
 // Get the super cluster
@@ -609,16 +610,16 @@ namespace xolotlSolver
 // Gather all the data
    for (int i = 0; i < maxSize; i++) 
    {
-    MPI_Reduce(&heConcLocal[i], &heConcentrations[i], 1, MPI_DOUBLE,
-               MPI_SUM, 0, PETSC_COMM_WORLD);
+    MPI_Reduce( &heConcLocal[i], &heConcentrations[i], 1, MPI_DOUBLE,
+                MPI_SUM, 0, PETSC_COMM_WORLD );
    }
 
 // Print it from the main proc
    if (procId == 0) 
    {
-    for (int i = 0; i < maxSize; i++) 
+    for (int i = 0; i < maxSize; i++)  // vfda: loop over maxSize!!
     {
-     if (heConcentrations[i] > 1.0e-16) 
+     if (heConcentrations[i] > 1.0e-16) // vfda: must have this to stop maxSize
      {
       outputFile << x << " " << i << " " << heConcentrations[i]
                  << std::endl;
