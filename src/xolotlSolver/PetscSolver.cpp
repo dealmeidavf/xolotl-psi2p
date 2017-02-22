@@ -214,18 +214,25 @@ namespace xolotlSolver
   TS ts;
   ierr = TSCreate(PETSC_COMM_WORLD, &ts);
   checkPetscError(ierr, "PetscSolver::solve: TSCreate failed.");
+
   ierr = TSSetType(ts, TSARKIMEX);
   checkPetscError(ierr, "PetscSolver::solve: TSSetType failed.");
+
   ierr = TSARKIMEXSetFullyImplicit(ts, PETSC_TRUE);
   checkPetscError(ierr, "PetscSolver::solve: TSARKIMEXSetFullyImplicit failed.");
+
   ierr = TSSetDM(ts, da);
   checkPetscError(ierr, "PetscSolver::solve: TSSetDM failed.");
+
   ierr = TSSetProblemType(ts, TS_NONLINEAR);
   checkPetscError(ierr, "PetscSolver::solve: TSSetProblemType failed.");
+
   ierr = TSSetRHSFunction(ts, NULL, RHSFunction, NULL);
   checkPetscError(ierr, "PetscSolver::solve: TSSetRHSFunction failed.");
+
   ierr = TSSetRHSJacobian(ts, NULL, NULL, RHSJacobian, NULL);
   checkPetscError(ierr, "PetscSolver::solve: TSSetRHSJacobian failed.");
+
   ierr = TSSetSolution(ts, C);
   checkPetscError(ierr, "PetscSolver::solve: TSSetSolution failed.");
 

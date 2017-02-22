@@ -9,6 +9,7 @@
 #include <Constants.h>
 #include <petscts.h>
 #include <petscsys.h>
+#include <cassert>
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -204,6 +205,7 @@ namespace xolotlSolver
     xolotlCore::HDF5Utils::fillConcentrations(concVector, i);
    }
   }
+
 // Finalize the HDF5 file
   xolotlCore::HDF5Utils::closeFile();
 
@@ -212,7 +214,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
-}
+
+ } // end PetscErrorCode startStop1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -341,7 +344,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
-}
+
+ } // end PetscErrorCode computeHeliumRetention1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -468,15 +472,15 @@ namespace xolotlSolver
               << fluence - totalXeConcentration << " "
               << totalRadii / totalBubbleConcentration << std::endl;
    outputFile.close();
-  }
 
 // Restore the solutionArray
-  ierr = DMDAVecRestoreArrayDOFRead(da, solution, &solutionArray);
-  CHKERRQ(ierr);
+   ierr = DMDAVecRestoreArrayDOFRead(da, solution, &solutionArray);
+   CHKERRQ(ierr);
 
-  PetscFunctionReturn(0);
+   PetscFunctionReturn(0);
+  }
 
- }
+ } // PetscErrorCode computeXenonRetention1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -485,7 +489,7 @@ namespace xolotlSolver
  * This is a monitoring method that will compute the helium concentrations
  */
  PetscErrorCode computeHeliumConc1D( TS ts, PetscInt timestep, PetscReal time,
-                                     Vec solution, void* ictx ) 
+                                     Vec solution, void* ictx )
  {
 // Initial declarations
   PetscErrorCode ierr;
@@ -554,8 +558,9 @@ namespace xolotlSolver
   std::ofstream outputFile;
   if (procId == 0) 
   {
+   assert( timeStep <= 9999 ); // fix the field width below setw(4) upon change
    std::stringstream name;
-   name << "heliumConc_" << timestep << ".dat";
+   name << "heliumConc_" << setfill('0') << setw(4) << timestep << ".dat";
    outputFile.open(name.str());
    outputFile << time << std::endl;
   }
@@ -617,7 +622,7 @@ namespace xolotlSolver
 // Print it from the main proc
    if (procId == 0) 
    {
-    for (int i = 0; i < maxSize; i++)  // vfda: loop over maxSize!!
+    for (int i = 0; i < maxSize; i++)  // vfda: careful here: loop over maxSize!!
     {
      if (heConcentrations[i] > 1.0e-16) // vfda: must have this to stop maxSize
      {
@@ -633,7 +638,8 @@ namespace xolotlSolver
     heConcLocal[i]      = 0.0;
     heConcentrations[i] = 0.0;
    }
-  }
+
+  } // end for ( PetscInt xi = surfacePos; xi < Mx; xi++ ) 
 
 // Close the file
   outputFile.close();
@@ -643,7 +649,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // PetscErrorCode computeHeliumConc1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -754,7 +761,8 @@ namespace xolotlSolver
     outputFile << x - grid[surfacePos] << " " << heConcentration
                << std::endl;
    }
-  }
+
+  } // end for (int xi = surfacePos; xi < xSize; xi++) 
 
 // Close the file
   if (procId == 0) 
@@ -767,7 +775,8 @@ namespace xolotlSolver
          CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
-}
+
+ } // end PetscErrorCode computeCumulativeHelium1D( TS ts, PetscInt timestep,
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -895,7 +904,8 @@ namespace xolotlSolver
          CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode computeTRIDYN1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -1119,7 +1129,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode monitorScatter1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -1298,7 +1309,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode monitorSeries1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -1473,7 +1485,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode monitorSurface1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -1608,7 +1621,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode monitorMeanSize1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -1716,7 +1730,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode monitorMaxClusterConc1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -1960,7 +1975,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode monitorMovingSurface1D( )
 
 //--------------------------------------------------------------------------------
 #undef __FUNCT__
@@ -2115,7 +2131,8 @@ namespace xolotlSolver
   CHKERRQ(ierr);
 
   PetscFunctionReturn(0);
- }
+
+ } // end PetscErrorCode monitorBursting1D( )
 
 //--------------------------------------------------------------------------------
 /**
@@ -2590,8 +2607,8 @@ namespace xolotlSolver
 
   PetscFunctionReturn(0);
 
-  } // wrong column find closing pair
+ } // end PetscErrorCode setupPetsc1DMonitor( TS ts )  
 
- }
+} // end namespace xolotlSolver 
 
 /* end namespace xolotlSolver */

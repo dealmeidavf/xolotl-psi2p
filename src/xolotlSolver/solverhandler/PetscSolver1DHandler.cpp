@@ -59,8 +59,8 @@ namespace xolotlSolver
   double hx = 0.0, hy = 0.0, hz = 0.0;
   xolotlCore::HDF5Utils::readHeader(networkName, nx, hx, ny, hy, nz, hz);
 
-  ierr = DMDACreate1d(PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, nx, dof, 1,
-                      NULL, &da);
+  ierr = DMDACreate1d( PETSC_COMM_WORLD, DM_BOUNDARY_GHOSTED, nx, dof, 1,
+                       NULL, &da );
   checkPetscError(ierr, "PetscSolver1DHandler::createSolverContext: DMDACreate1d failed.");
   ierr = DMSetFromOptions(da);
   checkPetscError(ierr, "PetscSolver1DHandler::createSolverContext: DMSetFromOptions failed.");
