@@ -19,3 +19,5 @@ mytags
 createtags
 *.plt
 XolotlConfig.h
+src/latex
+src/html

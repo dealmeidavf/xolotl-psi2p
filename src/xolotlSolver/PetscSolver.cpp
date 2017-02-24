@@ -37,13 +37,43 @@ namespace xolotlSolver
  extern PetscErrorCode setupPetsc1DMonitor(TS);
  extern PetscErrorCode setupPetsc2DMonitor(TS);
  extern PetscErrorCode setupPetsc3DMonitor(TS);
+  
+//--------------------------------------------------------------------------------
+ PetscSolver::PetscSolver(std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
+	Solver(registry) 
+ {
+  RHSFunctionTimer = handlerRegistry->getTimer("RHSFunctionTimer");
+  RHSJacobianTimer = handlerRegistry->getTimer("RHSJacobianTimer");
+ }
 
 //--------------------------------------------------------------------------------
- void PetscSolver::setupInitialConditions( DM da, Vec C ) 
+ PetscSolver::~PetscSolver() 
  {
-// Initialize the concentrations in the solution vector
-  auto solverHandler = PetscSolver::getSolverHandler();
-  solverHandler->initializeConcentration( da, C );
+ }
+  
+//--------------------------------------------------------------------------------
+ void 
+ PetscSolver::setOptions(const std::map<std::string, std::string>&) 
+ {
+ }
+
+//--------------------------------------------------------------------------------
+ void 
+ PetscSolver::setupMesh() 
+ {
+ }
+
+//--------------------------------------------------------------------------------
+ void 
+ PetscSolver::initialize(std::shared_ptr<ISolverHandler> solverHandler) 
+ {
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ Initialize program
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+  PetscInitialize(&numCLIArgs, &CLIArgs, (char*) 0, help);
+
+// Set the solver handler
+  Solver::solverHandler = (ISolverHandler *) solverHandler.get();
 
   return;
  }
@@ -152,46 +182,6 @@ namespace xolotlSolver
  }
 
 //--------------------------------------------------------------------------------
- PetscSolver::PetscSolver(std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
-	Solver(registry) 
- {
-  RHSFunctionTimer = handlerRegistry->getTimer("RHSFunctionTimer");
-  RHSJacobianTimer = handlerRegistry->getTimer("RHSJacobianTimer");
- }
-
-//--------------------------------------------------------------------------------
- PetscSolver::~PetscSolver() 
- {
- }
-
-//--------------------------------------------------------------------------------
- void 
- PetscSolver::setOptions(const std::map<std::string, std::string>&) 
- {
- }
-
-//--------------------------------------------------------------------------------
- void 
- PetscSolver::setupMesh() 
- {
- }
-
-//--------------------------------------------------------------------------------
- void 
- PetscSolver::initialize(std::shared_ptr<ISolverHandler> solverHandler) 
- {
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- Initialize program
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  PetscInitialize(&numCLIArgs, &CLIArgs, (char*) 0, help);
-
-// Set the solver handler
-  Solver::solverHandler = (ISolverHandler *) solverHandler.get();
-
-  return;
- }
-
-//--------------------------------------------------------------------------------
  void 
  PetscSolver::solve() 
  {
@@ -201,7 +191,7 @@ namespace xolotlSolver
   DM da;
   Solver::solverHandler->createSolverContext(da);
 
-/*  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  Extract global vector from DMDA to hold solution
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   Vec C;
@@ -309,6 +299,16 @@ namespace xolotlSolver
   checkPetscError(ierr, "PetscSolver::solve: TSDestroy failed.");
   ierr = DMDestroy(&da);
   checkPetscError(ierr, "PetscSolver::solve: DMDestroy failed.");
+
+  return;
+ }
+  
+//--------------------------------------------------------------------------------
+ void PetscSolver::setupInitialConditions( DM da, Vec C ) 
+ {
+// Initialize the concentrations in the solution vector
+  auto solverHandler = PetscSolver::getSolverHandler();
+  solverHandler->initializeConcentration( da, C );
 
   return;
  }

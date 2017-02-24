@@ -105,7 +105,8 @@ namespace xolotlSolver
  *  In this case ofill has only a few diagonal entries since the only spatial
  *  coupling is regular diffusion.
  */
-  PetscInt *ofill, *dfill;
+  PetscInt* ofill;
+  PetscInt* dfill;
   ierr = PetscMalloc(dof * dof * sizeof(PetscInt), &ofill);
   checkPetscError(ierr, "PetscSolver1DHandler::createSolverContext: PetscMalloc (ofill) failed.");
   ierr = PetscMalloc(dof * dof * sizeof(PetscInt), &dfill);
