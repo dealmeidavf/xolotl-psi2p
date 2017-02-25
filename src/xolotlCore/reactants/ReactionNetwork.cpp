@@ -12,7 +12,7 @@ ReactionNetwork::ReactionNetwork() : temperature(0.0), networkSize(0),
                                      numIClusters(0), numSuperClusters(0), 
                                      maxVClusterSize(0), maxIClusterSize(0) 
 {
-//    concUpdateCounter = xolotlPerf::getHandlerRegistry()->getEventCounter("net_conc_updates");
+// concUpdateCounter = xolotlPerf::getHandlerRegistry()->getEventCounter("net_conc_updates");
 // Setup the vector to hold all of the reactants
  allReactants = make_shared<std::vector<IReactant*>>();
  return;
@@ -37,19 +37,19 @@ ReactionNetwork::ReactionNetwork(
 //--------------------------------------------------------------------------------
 ReactionNetwork::ReactionNetwork( const ReactionNetwork& other ) 
 {
- handlerRegistry = other.handlerRegistry;
- allReactants = other.allReactants;
- temperature = other.temperature;
- networkSize = other.networkSize;
- names = other.names;
- compoundNames = other.compoundNames;
- reactionsEnabled = other.reactionsEnabled;
+ handlerRegistry      = other.handlerRegistry;
+ allReactants         = other.allReactants;
+ temperature          = other.temperature;
+ networkSize          = other.networkSize;
+ names                = other.names;
+ compoundNames        = other.compoundNames;
+ reactionsEnabled     = other.reactionsEnabled;
  dissociationsEnabled = other.dissociationsEnabled;
- numVClusters = other.numVClusters;
- numIClusters = other.numIClusters;
- numSuperClusters = other.numSuperClusters;
- maxVClusterSize = other.maxVClusterSize;
- maxIClusterSize = other.maxIClusterSize;
+ numVClusters         = other.numVClusters;
+ numIClusters         = other.numIClusters;
+ numSuperClusters     = other.numSuperClusters;
+ maxVClusterSize      = other.maxVClusterSize;
+ maxIClusterSize      = other.maxIClusterSize;
 
 // TODO - do we copy the source ReactionNetwork's counter also?
 // Or should we have our own counter?  How to distinguish them by name?
@@ -62,7 +62,7 @@ ReactionNetwork::ReactionNetwork( const ReactionNetwork& other )
 
 //--------------------------------------------------------------------------------
 void 
-ReactionNetwork::fillConcentrationsArray(double * concentrations) 
+ReactionNetwork::fillConcentrationsArray( double* concentrations )
 {
 // Local Declarations
  auto reactants = getAll();
@@ -152,12 +152,13 @@ ReactionNetwork::get(const std::string& type, const int size) const
 
 //--------------------------------------------------------------------------------
 IReactant* 
-ReactionNetwork::getCompound(const std::string& type, const std::vector<int>& sizes) const 
+ReactionNetwork::getCompound( const std::string& type, 
+                              const std::vector<int>& sizes ) const 
 {
 // Local Declarations
-std::shared_ptr<IReactant> retReactant;
+ std::shared_ptr<IReactant> retReactant;
 
-return (IReactant *) retReactant.get();
+ return (IReactant*) retReactant.get();
 }
 
 //--------------------------------------------------------------------------------

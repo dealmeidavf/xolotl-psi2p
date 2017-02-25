@@ -13,7 +13,7 @@ VCluster::VCluster(int nV,
 	size = nV;
 	// Set the reactant name appropriately
 	std::stringstream nameStream;
-	nameStream << "V_" << size;
+	nameStream << "V" << size;
 	name = nameStream.str();
 	// Set the typename appropriately
 	typeName = vType;

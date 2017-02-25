@@ -53,7 +53,7 @@ namespace xolotlSolver
   
 //--------------------------------------------------------------------------------
  void 
- PetscSolver::setOptions(const std::map<std::string, std::string>&) 
+ PetscSolver::setOptions( const std::map<std::string, std::string>& )
  {
  }
 
@@ -65,12 +65,12 @@ namespace xolotlSolver
 
 //--------------------------------------------------------------------------------
  void 
- PetscSolver::initialize(std::shared_ptr<ISolverHandler> solverHandler) 
+ PetscSolver::initialize( std::shared_ptr<ISolverHandler> solverHandler ) 
  {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  Initialize program
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  PetscInitialize(&numCLIArgs, &CLIArgs, (char*) 0, help);
+  PetscInitialize( &numCLIArgs, &CLIArgs, (char*) 0, help );
 
 // Set the solver handler
   Solver::solverHandler = (ISolverHandler *) solverHandler.get();

@@ -16,7 +16,7 @@ HeCluster::HeCluster(int nHe,
 
 	// Set the reactant name appropriately
 	std::stringstream nameStream;
-	nameStream << "He_" << size;
+	nameStream << "He" << size;
 	name = nameStream.str();
 	// Set the typename appropriately
 	typeName = heType;

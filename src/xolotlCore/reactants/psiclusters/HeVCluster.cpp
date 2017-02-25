@@ -6,148 +6,158 @@
 
 using namespace xolotlCore;
 
-HeVCluster::HeVCluster(int numHe, int numV,
-		std::shared_ptr<xolotlPerf::IHandlerRegistry> registry) :
-		PSICluster(registry), numHe(numHe), numV(numV) {
-	// Set the cluster size as the sum of
-	// the number of Helium and Vacancies
-	size = numHe + numV;
+//--------------------------------------------------------------------------------
+HeVCluster::HeVCluster( int numHe, int numV,
+                        std::shared_ptr<xolotlPerf::IHandlerRegistry> registry ) :
+            PSICluster(registry), numHe(numHe), numV(numV) 
+{
+// Set the cluster size as the sum of
+// the number of Helium and Vacancies
+ size = numHe + numV;
 
-	// Update the composition map
-	compositionMap[heType] = numHe;
-	compositionMap[vType] = numV;
+// Update the composition map
+ compositionMap[heType] = numHe;
+ compositionMap[vType]  = numV;
 
-	// Set the reactant name appropriately
-	std::stringstream nameStream;
-	nameStream << "He_" << numHe << "V_" << numV;
-	name = nameStream.str();
-	// Set the typename appropriately
-	typeName = heVType;
+// Set the reactant name appropriately
+ std::stringstream nameStream;
+ nameStream << "He" << numHe << "-" << "V" << numV;
+ name = nameStream.str();
+// Set the typename appropriately
+ typeName = heVType;
 
-	// Compute the reaction radius
-	reactionRadius = (sqrt(3.0) / 4.0) * xolotlCore::tungstenLatticeConstant
-			+ pow(
-					(3.0 * pow(xolotlCore::tungstenLatticeConstant, 3.0) * numV)
-							/ (8.0 * xolotlCore::pi), (1.0 / 3.0))
-			- pow(
-					(3.0 * pow(xolotlCore::tungstenLatticeConstant, 3.0))
-							/ (8.0 * xolotlCore::pi), (1.0 / 3.0));
+// Compute the reaction radius
+ reactionRadius = (sqrt(3.0) / 4.0) * xolotlCore::tungstenLatticeConstant
+                + pow( (3.0 * pow(xolotlCore::tungstenLatticeConstant, 3.0) * numV)
+                / (8.0 * xolotlCore::pi), (1.0 / 3.0)) 
+                - pow( (3.0 * pow(xolotlCore::tungstenLatticeConstant, 3.0)) 
+                / (8.0 * xolotlCore::pi), (1.0 / 3.0));
 
-	return;
+ return;
 }
 
-HeVCluster::HeVCluster(HeVCluster &other) :
-		PSICluster(other) {
-	numHe = other.numHe;
-	numV = other.numV;
+//--------------------------------------------------------------------------------
+HeVCluster::HeVCluster( HeVCluster &other ) : PSICluster(other) 
+{
+ numHe = other.numHe;
+ numV = other.numV;
 
-	return;
+ return;
 }
 
-void HeVCluster::replaceInCompound(std::vector<IReactant *> & reactants,
-		const std::string& oldComponentName) {
-	// Local Declarations
-	std::map<std::string, int> myComp = getComposition(), productReactantComp;
-	int myComponentNumber = myComp[oldComponentName];
-	int secondId = 0;
+//--------------------------------------------------------------------------------
+void 
+HeVCluster::replaceInCompound( std::vector<IReactant*>& reactants,
+                               const std::string& oldComponentName) 
+{
+// Local Declarations
+std::map<std::string, int> myComp = getComposition(), productReactantComp;
+int myComponentNumber = myComp[oldComponentName];
+int secondId = 0;
 
-	// Loop over all of the extra reactants in this reaction and handle the replacement
-	for (unsigned int i = 0; i < reactants.size(); i++) {
-		// Get the second reactant and its size
-		auto secondReactant = (PSICluster *) reactants[i];
-		int secondReactantSize = secondReactant->getSize();
-		// Create the composition vector
-		productReactantComp = myComp;
-		// Updated the modified components
-		productReactantComp[oldComponentName] = myComponentNumber
-				- secondReactantSize;
-		// Create the composition vector -- FIXME! This should be general!
-		std::vector<int> productCompositionVector = {
-				productReactantComp[heType], productReactantComp[vType], 0 };
-		// Get the product of the same type as the second reactant
-		auto productReactant = network->getCompound(typeName,
-				productCompositionVector);
-		// If the product exists, mark the proper reaction arrays and add it to the list
-		if (productReactant) {
-			// Setup the connectivity array for the second reactant
-			secondId = secondReactant->getId();
-			setReactionConnectivity(secondId);
-			// Creates the combining cluster
-			// The reaction constant will be computed later and is set to 0.0 for now
-			CombiningCluster combCluster(secondReactant, 0.0);
-			// Push the product onto the list of clusters that combine with this one
-			combiningReactants.push_back(combCluster);
-		}
-	}
-
-	return;
+// Loop over all of the extra reactants in this reaction and handle the replacement
+for (unsigned int i = 0; i < reactants.size(); i++) {
+// Get the second reactant and its size
+auto secondReactant = (PSICluster *) reactants[i];
+int secondReactantSize = secondReactant->getSize();
+// Create the composition vector
+productReactantComp = myComp;
+// Updated the modified components
+productReactantComp[oldComponentName] = myComponentNumber
+- secondReactantSize;
+// Create the composition vector -- FIXME! This should be general!
+std::vector<int> productCompositionVector = {
+productReactantComp[heType], productReactantComp[vType], 0 };
+// Get the product of the same type as the second reactant
+auto productReactant = network->getCompound(typeName,
+productCompositionVector);
+// If the product exists, mark the proper reaction arrays and add it to the list
+if (productReactant) {
+// Setup the connectivity array for the second reactant
+secondId = secondReactant->getId();
+setReactionConnectivity(secondId);
+// Creates the combining cluster
+// The reaction constant will be computed later and is set to 0.0 for now
+CombiningCluster combCluster(secondReactant, 0.0);
+// Push the product onto the list of clusters that combine with this one
+combiningReactants.push_back(combCluster);
+}
 }
 
-void HeVCluster::combineClusters(std::vector<IReactant *> & clusters,
-		const std::string& productName) {
-	// Initial declarations
-	std::map<std::string, int> myComposition = getComposition(),
-			secondComposition;
-
-	// Get all the I clusters to loop on them
-	auto iClusters = network->getAll(iType);
-
-	// Loop on the potential combining reactants
-	for (unsigned int i = 0; i < clusters.size(); i++) {
-		// Get the second reactant, its composition and its index
-		auto secondCluster = (PSICluster *) clusters[i];
-		secondComposition = secondCluster->getComposition();
-		// Check that the simple product [He_(a+c)](V_b) doesn't exist
-		std::vector<int> comp = { myComposition[heType]
-				+ secondComposition[heType], myComposition[vType]
-				+ secondComposition[vType], myComposition[iType]
-				+ secondComposition[iType] };
-		auto simpleProduct = network->getCompound(productName, comp);
-
-		if (simpleProduct)
-			continue;
-		// The simple product doesn't exist so it will go though trap-mutation
-		// The reaction is
-		// (He_a)(V_b) + He_c --> [He_(a+c)][V_(b+d)] + I_d
-		// Loop on the possible I starting by the smallest
-		for (auto it = iClusters.begin(); it != iClusters.end(); it++) {
-			// Get the size of the I cluster
-			int iSize = (*it)->getSize();
-			// Create the composition of the potential product
-			comp = {myComposition[heType] + secondComposition[heType],
-				myComposition[vType] + secondComposition[vType] + iSize,
-				myComposition[iType] + secondComposition[iType]};
-			auto firstProduct = network->getCompound(productName, comp);
-			auto secondProduct = network->get(iType, iSize);
-			// If both products exist
-			if (firstProduct && secondProduct) {
-				// This cluster combines with the second reactant
-				setReactionConnectivity(secondCluster->getId());
-				// Creates the combining cluster
-				// The reaction constant will be computed later and is set to 0.0 for now
-				CombiningCluster combCluster(secondCluster, 0.0);
-				// Push the product onto the list of clusters that combine with this one
-				combiningReactants.push_back(combCluster);
-				// Break the loop because we want only one reaction
-				break;
-			}
-		}
-	}
-
-	return;
+return;
 }
 
-void HeVCluster::createReactionConnectivity() {
-	// Connect this cluster to itself since any reaction will affect it
-	setReactionConnectivity(id);
+//--------------------------------------------------------------------------------
+void 
+HeVCluster::combineClusters( std::vector<IReactant *> & clusters,
+                             const std::string& productName) 
+{
+// Initial declarations
+std::map<std::string, int> myComposition = getComposition(),
+secondComposition;
 
-	// This cluster is always (He_a)(V_b)
+// Get all the I clusters to loop on them
+auto iClusters = network->getAll(iType);
 
-	// Helium absorption by HeV clusters producing this cluster
-	// He_(a-i) + (He_i)(V_b) --> (He_a)(V_b)
-	// Get all the He clusters from the network
-	auto reactants = network->getAll(heType);
-	for (unsigned int i = 0; i < reactants.size(); i++) {
+// Loop on the potential combining reactants
+for (unsigned int i = 0; i < clusters.size(); i++) {
+// Get the second reactant, its composition and its index
+auto secondCluster = (PSICluster *) clusters[i];
+secondComposition = secondCluster->getComposition();
+// Check that the simple product [He_(a+c)](V_b) doesn't exist
+std::vector<int> comp = { myComposition[heType]
++ secondComposition[heType], myComposition[vType]
++ secondComposition[vType], myComposition[iType]
++ secondComposition[iType] };
+auto simpleProduct = network->getCompound(productName, comp);
+
+if (simpleProduct)
+continue;
+// The simple product doesn't exist so it will go though trap-mutation
+// The reaction is
+// (He_a)(V_b) + He_c --> [He_(a+c)][V_(b+d)] + I_d
+// Loop on the possible I starting by the smallest
+for (auto it = iClusters.begin(); it != iClusters.end(); it++) {
+// Get the size of the I cluster
+int iSize = (*it)->getSize();
+// Create the composition of the potential product
+comp = {myComposition[heType] + secondComposition[heType],
+myComposition[vType] + secondComposition[vType] + iSize,
+myComposition[iType] + secondComposition[iType]};
+auto firstProduct = network->getCompound(productName, comp);
+auto secondProduct = network->get(iType, iSize);
+// If both products exist
+if (firstProduct && secondProduct) {
+// This cluster combines with the second reactant
+setReactionConnectivity(secondCluster->getId());
+// Creates the combining cluster
+// The reaction constant will be computed later and is set to 0.0 for now
+CombiningCluster combCluster(secondCluster, 0.0);
+// Push the product onto the list of clusters that combine with this one
+combiningReactants.push_back(combCluster);
+// Break the loop because we want only one reaction
+break;
+}
+}
+}
+
+return;
+}
+
+//--------------------------------------------------------------------------------
+void 
+HeVCluster::createReactionConnectivity() 
+{
+// Connect this cluster to itself since any reaction will affect it
+setReactionConnectivity(id);
+
+// This cluster is always (He_a)(V_b)
+
+// Helium absorption by HeV clusters producing this cluster
+// He_(a-i) + (He_i)(V_b) --> (He_a)(V_b)
+// Get all the He clusters from the network
+auto reactants = network->getAll(heType);
+for (unsigned int i = 0; i < reactants.size(); i++) {
 		auto heliumReactant = (PSICluster *) reactants[i];
 		int heliumReactantSize = heliumReactant->getSize();
 		// Get the second reactant, i.e. HeV cluster with He number smaller
@@ -340,6 +350,7 @@ void HeVCluster::createReactionConnectivity() {
 	return;
 }
 
+//--------------------------------------------------------------------------------
 void HeVCluster::createDissociationConnectivity() {
 	// This cluster is always (He_a)(V_b)
 

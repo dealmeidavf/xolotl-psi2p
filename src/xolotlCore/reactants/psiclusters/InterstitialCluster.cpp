@@ -14,7 +14,7 @@ InterstitialCluster::InterstitialCluster(int nI,
 
 	// Set the reactant name appropriately
 	std::stringstream nameStream;
-	nameStream << "I_" << size;
+	nameStream << "I" << size;
 	name = nameStream.str();
 	// Set the typename appropriately
 	typeName = iType;

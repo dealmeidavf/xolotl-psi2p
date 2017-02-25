@@ -3,21 +3,22 @@
 
 #include <string>
 
-namespace xolotlCore {
+namespace xolotlCore 
+{
 
 /**
  * An Identifiable is an object that has some identification (e.g., a name
  * and/or an ID).
  */
-class IIdentifiable
-{
- public:
+ class IIdentifiable
+ {
+  public:
 
-    /**
-     * Obtain the object's given name.
-     */
-    virtual std::string getName( void ) const = 0;
-};
+/**
+* Obtain the object's given name.
+*/
+  virtual std::string getName( void ) const = 0;
+ };
 
 } // end namespace xolotlCore
 

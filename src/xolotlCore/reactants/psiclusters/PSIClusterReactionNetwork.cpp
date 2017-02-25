@@ -28,8 +28,7 @@ PSIClusterReactionNetwork::PSIClusterReactionNetwork(
 
 //--------------------------------------------------------------------------------
 PSIClusterReactionNetwork::PSIClusterReactionNetwork(
-		const PSIClusterReactionNetwork& other) :
-		ReactionNetwork(other) 
+		const PSIClusterReactionNetwork& other) : ReactionNetwork(other) 
 {
 // The size and ids do not need to be copied. They will be fixed when the
 // reactants are added.
@@ -67,7 +66,6 @@ PSIClusterReactionNetwork::PSIClusterReactionNetwork(
  return;
 }
 
-
 //--------------------------------------------------------------------------------
 void 
 PSIClusterReactionNetwork::setDefaultPropsAndNames() 
@@ -87,19 +85,19 @@ PSIClusterReactionNetwork::setDefaultPropsAndNames()
  = std::make_shared<std::vector<std::shared_ptr<IReactant>>>();
 
 // Initialize default properties
- reactionsEnabled = true;
+ reactionsEnabled     = true;
  dissociationsEnabled = true;
- numHeClusters = 0;
- numVClusters = 0;
- numIClusters = 0;
- numHeVClusters = 0;
- numHeIClusters = 0;
- numSuperClusters = 0;
- maxHeClusterSize = 0;
- maxVClusterSize = 0;
- maxIClusterSize = 0;
- maxHeVClusterSize = 0;
- maxHeIClusterSize = 0;
+ numHeClusters        = 0;
+ numVClusters         = 0;
+ numIClusters         = 0;
+ numHeVClusters       = 0;
+ numHeIClusters       = 0;
+ numSuperClusters     = 0;
+ maxHeClusterSize     = 0;
+ maxVClusterSize      = 0;
+ maxIClusterSize      = 0;
+ maxHeVClusterSize    = 0;
+ maxHeIClusterSize    = 0;
 
 // Initialize the current and last size to 0
  networkSize = 0;
@@ -113,11 +111,11 @@ PSIClusterReactionNetwork::setDefaultPropsAndNames()
  compoundNames.push_back(PSISuperType);
 
 // Setup the cluster type map
- clusterTypeMap[heType] = heVector;
- clusterTypeMap[vType] = vVector;
- clusterTypeMap[iType] = iVector;
- clusterTypeMap[heVType] = heVVector;
- clusterTypeMap[heIType] = heIVector;
+ clusterTypeMap[heType]       = heVector;
+ clusterTypeMap[vType]        = vVector;
+ clusterTypeMap[iType]        = iVector;
+ clusterTypeMap[heVType]      = heVVector;
+ clusterTypeMap[heIType]      = heIVector;
  clusterTypeMap[PSISuperType] = superVector;
 
  return;
@@ -151,7 +149,7 @@ PSIClusterReactionNetwork::getTemperature() const
 
 //--------------------------------------------------------------------------------
 IReactant* 
-PSIClusterReactionNetwork::get(const std::string& type, const int size) const 
+PSIClusterReactionNetwork::get( const std::string& type, const int size ) const 
 {
 // Local Declarations
  static std::map<std::string, int> composition = { { heType, 0 },
@@ -182,36 +180,46 @@ PSIClusterReactionNetwork::get(const std::string& type, const int size) const
 
 //--------------------------------------------------------------------------------
 IReactant* 
-PSIClusterReactionNetwork::getCompound(const std::string& type,
-const std::vector<int>& sizes) const 
+PSIClusterReactionNetwork::getCompound( const std::string& type,
+                                        const std::vector<int>& sizes ) const 
 {
 // Local Declarations
  static std::map<std::string, int> composition = { { heType, 0 },
  { vType, 0 }, { iType, 0 }, { xeType, 0 } };
- std::shared_ptr<IReactant> retReactant;
+
+ std::shared_ptr<IReactant> retReactant; // null pointer
 
 // Initialize the values because it's static
  composition[heType] = 0;
- composition[vType] = 0;
- composition[iType] = 0;
+ composition[vType]  = 0;
+ composition[iType]  = 0;
 
 // Only pull the reactant if the name is valid and there are enough sizes
 // to fill the composition.
- if ((type == heVType || type == heIType) && sizes.size() == 3) 
+ if ( (type == heVType || type == heIType) && sizes.size() == 3 ) 
  {
   composition[heType] = sizes[0];
-  composition[vType] = sizes[1];
-  composition[iType] = sizes[2];
+  composition[vType]  = sizes[1];
+  composition[iType]  = sizes[2];
 
 // Make sure the reactant is in the map
-  std::string compStr = Reactant::toCanonicalString(type, composition);
-  if (mixedSpeciesMap.count(compStr)) 
+// format is: type:composition, e.g.: HeV:He156I0, HeV:He156I0V39Xe0, HeV:He157I0V40
+  std::string compStr = Reactant::toCanonicalString( type, composition );
+
+  if ( mixedSpeciesMap.count( compStr ) ) 
   {
-   retReactant = mixedSpeciesMap.at(compStr);
+   retReactant = mixedSpeciesMap.at( compStr );
+
+/*   std::cout << retReactant->getId() << std::endl;
+   std::cout << retReactant->getCompositionString() << std::endl;
+   std::cout << retReactant->getName() << std::endl;
+   std::cout << std::endl; */
   }
+
  }
 
  return retReactant.get();
+
 }
 
 //--------------------------------------------------------------------------------
@@ -248,18 +256,18 @@ PSIClusterReactionNetwork::getSuper(const std::string& type,
 }
 
 //--------------------------------------------------------------------------------
-const std::shared_ptr<std::vector<IReactant *>>& 
+const std::shared_ptr<std::vector<IReactant*>>& 
 PSIClusterReactionNetwork::getAll() const 
 {
  return allReactants;
 }
 
 //--------------------------------------------------------------------------------
-std::vector<IReactant *> PSIClusterReactionNetwork::getAll(
-		const std::string& name) const 
+std::vector<IReactant*> 
+PSIClusterReactionNetwork::getAll( const std::string& name) const 
 {
 // Local Declarations
- std::vector<IReactant *> reactants;
+ std::vector<IReactant*> reactants;
 
 // Only pull the reactants if the name is valid
  if (name == heType || name == vType || name == iType || name == heVType
@@ -279,7 +287,7 @@ std::vector<IReactant *> PSIClusterReactionNetwork::getAll(
 
 //--------------------------------------------------------------------------------
 void 
-PSIClusterReactionNetwork::add(std::shared_ptr<IReactant> reactant) 
+PSIClusterReactionNetwork::add( std::shared_ptr<IReactant> reactant ) 
 {
 // Local Declarations
  int numHe = 0, numV = 0, numI = 0;
@@ -365,7 +373,7 @@ PSIClusterReactionNetwork::add(std::shared_ptr<IReactant> reactant)
 
   clusters->push_back(reactant);
 // Add the pointer to the list of all clusters
-  allReactants->push_back(reactant.get());
+  allReactants->push_back( reactant.get() );
  }
 
  return;

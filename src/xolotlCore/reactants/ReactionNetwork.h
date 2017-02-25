@@ -273,17 +273,17 @@ public:
 	 *
 	 * It computes the cluster Ids and network size from the allReactants vector.
 	 */
-	virtual void reinitializeNetwork() {
+	virtual void reinitializeNetwork() 
+        {
 		return;
-	}
-
+	} 
 	/**
 	 * This operation returns the names of the reactants in the network.
 	 *
 	 * @return A vector with one entry for each of the distinct reactant types
 	 * in the network
 	 */
-	const std::vector<std::string> & getNames() const;
+	const std::vector<std::string>& getNames() const;
 
 	/**
 	 * This operation returns the names of the compound reactants in the
@@ -292,7 +292,7 @@ public:
 	 * @return A vector with one each for each of the distinct compound
 	 * reactant types in the network
 	 */
-	const std::vector<std::string> & getCompoundNames() const;
+	const std::vector<std::string>& getCompoundNames() const;
 
 	/**
 	 * This operation returns the size or number of reactants in the network.

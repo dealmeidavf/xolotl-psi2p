@@ -36,15 +36,18 @@ namespace xolotlCore
  * dynamically. It accounts for a small but significant amount of
  * performance.
  */
- static const std::string heType = "He";
- static const std::string vType = "V";
- static const std::string iType = "I";
+
+ static const std::string heType  = "He";
+ static const std::string vType   = "V";
+ static const std::string iType   = "I";
  static const std::string heVType = "HeV";
  static const std::string heIType = "HeI";
- static const std::string xeType = "Xe";
- static const std::string xeVType = "XeV";
- static const std::string xeIType = "XeI";
- static const std::string NESuperType = "NESuper";
+
+ static const std::string xeType       = "Xe";
+ static const std::string xeVType      = "XeV";
+ static const std::string xeIType      = "XeI";
+
+ static const std::string NESuperType  = "NESuper";
  static const std::string PSISuperType = "PSISuper";
 
 } /* end namespace xolotlCore */

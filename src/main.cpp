@@ -176,7 +176,7 @@ main(int argc, char** argv)
  try 
  {
 // Set up our performance data infrastructure.
-  xolotlPerf::initialize(opts.getPerfHandlerType());
+  xolotlPerf::initialize( opts.getPerfHandlerType() );
 
 // Initialize MPI. We do this instead of leaving it to some
 // other package (e.g., PETSc), because we want to avoid problems

@@ -4,11 +4,13 @@
 // Includes
 #include <Reactant.h>
 
-namespace xolotlPerf {
-	class ITimer;
+namespace xolotlPerf 
+{
+ class ITimer;
 }
 
-namespace xolotlCore {
+namespace xolotlCore 
+{
 
 /**
  * The PSICluster class is a Reactant that is specialized to work for
@@ -99,7 +101,7 @@ protected:
 		/**
 		 * The combining cluster
 		 */
-		PSICluster * combining;
+		PSICluster* combining;
 
 		/**
 		 * The combining cluster helium distance in the group (0.0 for non-super clusters)

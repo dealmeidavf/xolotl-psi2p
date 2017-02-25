@@ -7,12 +7,14 @@
 #include <sstream>
 #include <set>
 
-namespace xolotlPerf {
-class IHandlerRegistry;
-class IEventCounter;
+namespace xolotlPerf 
+{
+ class IHandlerRegistry;
+ class IEventCounter;
 }
 
-namespace xolotlCore {
+namespace xolotlCore 
+{
 
 /**
  * A reactant is a general reacting body in a reaction network. It represents
