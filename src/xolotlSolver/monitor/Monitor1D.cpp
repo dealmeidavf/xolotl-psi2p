@@ -783,7 +783,7 @@ namespace xolotlSolver
     outputFile.open(name.str(),ios::out|ios::app);
     for (int i = 0; i < nSpecies; i++)  
     {
-     if (conc_meshPt[i] > 1.0e-16) 
+     if (conc_meshPt[i] > 1.0e-15) // note that mesh point may be skipped
      {
       outputFile << x << " " << speciesNames1D[i] << " " << conc_meshPt[i]
                  << std::endl;
