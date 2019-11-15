@@ -7,6 +7,8 @@ either helium irradiation of tungsten in confined fusion applications or
 fission gas bubble generation in oxide nuclear fuel. 
 The current development is aimed at He irradiation.
 
+This project has been inactive since 2017. A summary of the work done is found in this [ORNL TM report](https://doi.org/10.2172/1376497)
+
 Original Xolotl Plasma Surface Interactions Simulator at
 https://sourceforge.net/p/xolotl-psi/
 
