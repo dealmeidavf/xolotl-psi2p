@@ -10,7 +10,7 @@ The current development is aimed at He irradiation.
 This project has been inactive since 2017. A summary of the work done is found 
 
    + In this [ORNL TM report](https://www.osti.gov/biblio/1376497/), 
-   + [Download here] (https://doi.org/10.2172/1376497).
+   + Download [here] (https://doi.org/10.2172/1376497).
 
 Original Xolotl Plasma Surface Interactions Simulator at
 https://sourceforge.net/p/xolotl-psi/
